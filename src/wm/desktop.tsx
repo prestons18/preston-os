@@ -33,7 +33,13 @@ export function Desktop() {
         const app = registry.get(w.app);
         return app ? <AppWindow app={app} x={w.x} y={w.y} onClose={() => wins.set(wins.get().filter(x => x.id !== w.id))} /> : null;
       })}
-      <Dock>{apps.map(app => <DockIcon onClick={() => open(app.name)} title={app.name}>{app.icon ? <Icon name={app.icon} size={28} /> : <Icon name="Package" size={28} />}</DockIcon>)}</Dock>
+      <Dock>
+        {apps.map(app => (
+          <DockIcon onClick={() => open(app.name)} title={app.name}>
+            {app.icon ? <Icon name={app.icon} size={28} /> : <Icon name="Package" size={28} />}
+          </DockIcon>
+        ))}
+      </Dock>
     </div>
   );
 }
