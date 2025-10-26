@@ -1,8 +1,9 @@
 import { h, signal, For } from "fuse";
 import { styled } from "../pmod/styled";
-import { registry } from "../pmod/registry";
+import { registry, widgetRegistry } from "../pmod/registry";
 import { Icon } from "../pmod";
 import { AppWindow } from "./window";
+import "../widgets/prsston";
 
 const Dock = styled('div', {
   position: 'fixed',
@@ -41,6 +42,7 @@ type WindowState = {
 export function Desktop() {
   const wins = signal<WindowState[]>([]);
   const apps = registry.list();
+  const widgets = widgetRegistry.list();
 
   const open = (name: string) => {
     if (wins.get().find(w => w.app === name)) return;
@@ -78,6 +80,8 @@ export function Desktop() {
           );
         }]
       })}
+
+      {widgets.map((widget, idx) => widget.content({ x: window.innerWidth - 340, y: 20 + idx * 420 }))} 
 
       <Dock>
         {apps.map(app => (
