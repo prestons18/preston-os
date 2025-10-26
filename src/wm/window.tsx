@@ -1,4 +1,4 @@
-import { h, signal } from "fuse";
+import { h, signal, onCleanup } from "fuse";
 import { PmodApp } from "../pmod/registry";
 import { styled, spring, Icon } from "../pmod";
 
@@ -32,10 +32,11 @@ export function AppWindow({ app, x, y, onClose }: { app: PmodApp; x: number; y: 
     const size = signal({ w: app.width || 400, h: app.height || 500 });
     const scale = spring(0, 500, 40);
     const opacity = spring(0, 500, 40);
-    const dragging = signal(false);
-    const resizing = signal(false);
-    const offset = signal({ x: 0, y: 0 });
-    const resizeStart = signal({ w: 0, h: 0, mx: 0, my: 0 });
+    
+    let isDragging = false;
+    let isResizing = false;
+    let dragOffset = { x: 0, y: 0 };
+    let resizeStart = { w: 0, h: 0, mx: 0, my: 0 };
     let rafId: number | null = null;
     let pendingPos: { x: number; y: number } | null = null;
     let pendingSize: { w: number; h: number } | null = null;
@@ -43,18 +44,11 @@ export function AppWindow({ app, x, y, onClose }: { app: PmodApp; x: number; y: 
     scale.set(1);
     opacity.set(1);
 
-    const handleMouseDown = (e: MouseEvent) => {
-        dragging.set(true);
-        offset.set({
-            x: e.clientX - pos.get().x,
-            y: e.clientY - pos.get().y
-        });
-    };
-
     const handleMouseMove = (e: MouseEvent) => {
-        if (dragging.get()) {
-            const newX = e.clientX - offset.get().x;
-            const newY = e.clientY - offset.get().y;
+        if (isDragging) {
+            e.preventDefault();
+            const newX = e.clientX - dragOffset.x;
+            const newY = e.clientY - dragOffset.y;
             const maxX = innerWidth - size.get().w;
             const maxY = innerHeight - 40;
             pendingPos = {
@@ -71,11 +65,11 @@ export function AppWindow({ app, x, y, onClose }: { app: PmodApp; x: number; y: 
                 });
             }
         }
-        if (resizing.get()) {
-            const rs = resizeStart.get();
+        if (isResizing) {
+            e.preventDefault();
             pendingSize = {
-                w: Math.max(200, rs.w + (e.clientX - rs.mx)),
-                h: Math.max(150, rs.h + (e.clientY - rs.my))
+                w: Math.max(200, resizeStart.w + (e.clientX - resizeStart.mx)),
+                h: Math.max(150, resizeStart.h + (e.clientY - resizeStart.my))
             };
             if (rafId === null) {
                 rafId = requestAnimationFrame(() => {
@@ -90,29 +84,35 @@ export function AppWindow({ app, x, y, onClose }: { app: PmodApp; x: number; y: 
     };
 
     const handleMouseUp = () => {
-        dragging.set(false);
-        resizing.set(false);
+        isDragging = false;
+        isResizing = false;
         if (rafId !== null) {
             cancelAnimationFrame(rafId);
             rafId = null;
         }
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
-    }
+    };
+
     const startDrag = (e: MouseEvent) => {
         e.preventDefault();
-        handleMouseDown(e);
-        document.addEventListener('mousemove', handleMouseMove);
+        e.stopPropagation();
+        isDragging = true;
+        dragOffset = {
+            x: e.clientX - pos.get().x,
+            y: e.clientY - pos.get().y
+        };
+        document.addEventListener('mousemove', handleMouseMove, { passive: false });
         document.addEventListener('mouseup', handleMouseUp);
-    }
+    };
 
     const startResize = (e: MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        resizing.set(true);
+        isResizing = true;
         const s = size.get();
-        resizeStart.set({ w: s.w, h: s.h, mx: e.clientX, my: e.clientY });
-        document.addEventListener('mousemove', handleMouseMove);
+        resizeStart = { w: s.w, h: s.h, mx: e.clientX, my: e.clientY };
+        document.addEventListener('mousemove', handleMouseMove, { passive: false });
         document.addEventListener('mouseup', handleMouseUp);
     };
 
@@ -121,6 +121,15 @@ export function AppWindow({ app, x, y, onClose }: { app: PmodApp; x: number; y: 
         opacity.set(0);
         setTimeout(onClose, 200);
     };
+
+    // Clean up document event listeners when component is destroyed
+    onCleanup(() => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+        if (rafId !== null) {
+            cancelAnimationFrame(rafId);
+        }
+    });
 
     return (
         <Win style={() => `left:${pos.get().x}px;top:${pos.get().y}px;width:${size.get().w}px;height:${size.get().h}px;transform:scale(${scale.get()});opacity:${opacity.get()}`}>
