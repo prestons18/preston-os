@@ -3,6 +3,9 @@ import { Children } from "fuse";
 export interface PmodApp {
     name: string;
     content: () => Children;
+    icon?: string;
+    width?: number;
+    height?: number;
 }
 
 export class AppRegistry {

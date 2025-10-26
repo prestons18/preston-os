@@ -9,6 +9,9 @@ const NoteItem = styled('div', {
 
 defineApp({
     name: "Notes",
+    icon: "📝",
+    width: 400,
+    height: 500,
     content() {
         const notes = signal<string[]>([]);
         const input = signal("");
