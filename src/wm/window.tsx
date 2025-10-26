@@ -1,6 +1,6 @@
 import { h, signal } from "fuse";
 import { PmodApp } from "../pmod/registry";
-import { styled, spring } from "../pmod";
+import { styled, spring, Icon } from "../pmod";
 
 const Win = styled('div', {
     position: 'absolute', background: 'var(--bg-elev)', borderRadius: 'var(--radius-base)',
@@ -18,8 +18,8 @@ const Content = styled('div', { flex: '1', overflow: 'auto' });
 
 const Close = styled('button', {
     marginLeft: 'auto', background: 'transparent', border: 'none',
-    color: 'var(--text-muted)', cursor: 'pointer', fontSize: '18px',
-    padding: '4px 8px', borderRadius: '4px'
+    color: 'var(--text-muted)', cursor: 'pointer',
+    padding: '4px 8px', borderRadius: '4px', display: 'flex', alignItems: 'center'
 });
 
 const ResizeHandle = styled('div', {
@@ -125,9 +125,11 @@ export function AppWindow({ app, x, y, onClose }: { app: PmodApp; x: number; y: 
     return (
         <Win style={() => `left:${pos.get().x}px;top:${pos.get().y}px;width:${size.get().w}px;height:${size.get().h}px;transform:scale(${scale.get()});opacity:${opacity.get()}`}>
             <Bar onMouseDown={startDrag} style="cursor:move">
-                <span>{app.icon || '📦'}</span>
+                {app.icon ? <Icon name={app.icon} size={18} /> : <Icon name="Package" size={18} />}
                 <span>{app.name}</span>
-                <Close onClick={close} onMouseDown={(e: MouseEvent) => e.stopPropagation()}>x</Close>
+                <Close onClick={close} onMouseDown={(e: MouseEvent) => e.stopPropagation()}>
+                    <Icon name="X" size={16} />
+                </Close>
             </Bar>
             <Content>{app.content()}</Content>
             <ResizeHandle onMouseDown={startResize} />

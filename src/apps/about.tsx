@@ -66,7 +66,7 @@ const ExpMeta = styled('div', {
 
 defineApp({
     name: "About",
-    icon: "👤",
+    icon: "User",
     width: 520,
     height: 600,
     content() {
@@ -77,7 +77,7 @@ defineApp({
                     <HeaderText>
                         <Name>Preston Arnold</Name>
                         <Role>Founder & Software Engineer</Role>
-                        <Location>📍 Northampton, UK</Location>
+                        <Location>Northampton, UK</Location>
                     </HeaderText>
                 </Header>
 

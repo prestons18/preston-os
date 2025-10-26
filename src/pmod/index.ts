@@ -1,14 +1,11 @@
 export { defineApp, getApp, listApps } from "./registry";
 export { styled } from "./styled";
 export { spring } from "./primitives/spring";
-
-// Layout
-export { VStack, vstack } from "./primitives/layout/vstack";
-export { HStack, hstack } from "./primitives/layout/hstack";
-
-// Components
-export { Button, button } from "./primitives/components/button";
+export { VStack } from "./primitives/layout/vstack";
+export { HStack } from "./primitives/layout/hstack";
+export { Button } from "./primitives/components/button";
 export { Input, input } from "./primitives/components/input";
-export { Card, card } from "./primitives/components/card";
 export { Heading, Text, Muted } from "./primitives/components/text";
+export { Card, card } from "./primitives/components/card";
 export { Tabs } from "./primitives/components/tabs";
+export { Icon } from "./primitives/components/icon";

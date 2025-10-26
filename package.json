@@ -14,5 +14,8 @@
   "devDependencies": {
     "esbuild": "latest",
     "typescript": "latest"
+  },
+  "dependencies": {
+    "lucide": "^0.548.0"
   }
 }

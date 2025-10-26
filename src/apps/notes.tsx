@@ -1,5 +1,5 @@
 import { h, signal } from "fuse";
-import { defineApp, styled, VStack, Button, Input, Heading, Text } from "../pmod";
+import { defineApp, styled, VStack, Button, Input, Heading, Text, Icon } from "../pmod";
 
 const NoteItem = styled('div', {
     display: 'flex', gap: 'var(--space-sm)', alignItems: 'center',
@@ -9,7 +9,7 @@ const NoteItem = styled('div', {
 
 defineApp({
     name: "Notes",
-    icon: "📝",
+    icon: "FileText",
     width: 400,
     height: 500,
     content() {
@@ -45,7 +45,9 @@ defineApp({
                     {() => notes.get().map((note, i) => (
                         <NoteItem>
                             <Text style="flex: 1">{note}</Text>
-                            <Button variant="ghost" onClick={() => deleteNote(i)} style="padding: var(--space-xs)">x</Button>
+                            <Button variant="ghost" onClick={() => deleteNote(i)} style="padding: var(--space-xs)">
+                                <Icon name="Trash2" size={16} />
+                            </Button>
                         </NoteItem>
                     ))}
                 </VStack>

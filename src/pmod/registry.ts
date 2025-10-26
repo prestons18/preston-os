@@ -1,9 +1,10 @@
 import { Children } from "fuse";
+import { icons } from "lucide";
 
 export interface PmodApp {
     name: string;
     content: () => Children;
-    icon?: string;
+    icon?: keyof typeof icons;
     width?: number;
     height?: number;
 }

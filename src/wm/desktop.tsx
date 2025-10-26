@@ -1,6 +1,7 @@
 import { h, signal } from "fuse";
 import { styled } from "../pmod/styled";
-import { registry, PmodApp } from "../pmod/registry";
+import { registry } from "../pmod/registry";
+import { Icon } from "../pmod";
 import { AppWindow } from "./window";
 
 const Dock = styled('div', {
@@ -10,10 +11,10 @@ const Dock = styled('div', {
   borderRadius: 'var(--radius-soft)', border: '1px solid rgba(255,255,255,0.06)'
 });
 
-const Icon = styled('button', {
+const DockIcon = styled('button', {
   width: '56px', height: '56px', background: 'var(--bg-soft)',
   border: '1px solid rgba(255,255,255,0.06)', borderRadius: 'var(--radius-base)',
-  fontSize: '28px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center'
+  cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center'
 });
 
 export function Desktop() {
@@ -32,7 +33,7 @@ export function Desktop() {
         const app = registry.get(w.app);
         return app ? <AppWindow app={app} x={w.x} y={w.y} onClose={() => wins.set(wins.get().filter(x => x.id !== w.id))} /> : null;
       })}
-      <Dock>{apps.map(app => <Icon onClick={() => open(app.name)} title={app.name}>{app.icon||'📦'}</Icon>)}</Dock>
+      <Dock>{apps.map(app => <DockIcon onClick={() => open(app.name)} title={app.name}>{app.icon ? <Icon name={app.icon} size={28} /> : <Icon name="Package" size={28} />}</DockIcon>)}</Dock>
     </div>
   );
 }
