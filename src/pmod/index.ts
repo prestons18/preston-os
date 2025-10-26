@@ -11,3 +11,4 @@ export { Button, button } from "./primitives/components/button";
 export { Input, input } from "./primitives/components/input";
 export { Card, card } from "./primitives/components/card";
 export { Heading, Text, Muted } from "./primitives/components/text";
+export { Tabs } from "./primitives/components/tabs";

@@ -53,9 +53,13 @@ export function AppWindow({ app, x, y, onClose }: { app: PmodApp; x: number; y: 
 
     const handleMouseMove = (e: MouseEvent) => {
         if (dragging.get()) {
+            const newX = e.clientX - offset.get().x;
+            const newY = e.clientY - offset.get().y;
+            const maxX = innerWidth - size.get().w;
+            const maxY = innerHeight - 40;
             pendingPos = {
-                x: e.clientX - offset.get().x,
-                y: e.clientY - offset.get().y
+                x: Math.max(0, Math.min(newX, maxX)),
+                y: Math.max(0, Math.min(newY, maxY))
             };
             if (rafId === null) {
                 rafId = requestAnimationFrame(() => {
