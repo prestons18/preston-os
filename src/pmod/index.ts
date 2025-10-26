@@ -1,4 +1,4 @@
-export { defineApp, getApp, listApps } from "./registry";
+export { defineApp, getApp, listApps, defineWidget, getWidget, listWidgets } from "./registry";
 export { styled } from "./styled";
 export { spring } from "./primitives/spring";
 export { VStack } from "./primitives/layout/vstack";
@@ -9,4 +9,4 @@ export { Heading, Text, Muted } from "./primitives/components/text";
 export { Card, card } from "./primitives/components/card";
 export { Tabs } from "./primitives/components/tabs";
 export { Icon } from "./primitives/components/icon";
-export { Widget, WidgetHeader, WidgetTitle, WidgetContent, WidgetItem, WidgetItemTitle, WidgetItemMeta } from "./primitives/components/widget";
+export { Widget, WidgetHeader, WidgetTitle, WidgetContent, WidgetItem, WidgetItemTitle, WidgetItemMeta, WidgetAction, WidgetBadge, WidgetDivider } from "./primitives/components/widget";

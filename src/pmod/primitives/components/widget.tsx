@@ -61,3 +61,35 @@ export const WidgetItemMeta = styled('div', {
   fontSize: '11px',
   color: 'var(--text-muted)'
 });
+
+export const WidgetAction = styled('button', {
+  background: 'transparent',
+  border: 'none',
+  cursor: 'pointer',
+  color: 'var(--text-muted)',
+  padding: '4px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  borderRadius: 'var(--radius-base)',
+  transition: 'all var(--motion-fast)'
+});
+
+export const WidgetBadge = styled('span', {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '2px 8px',
+  fontSize: '11px',
+  fontWeight: '600',
+  borderRadius: 'var(--radius-full)',
+  background: 'var(--bg-soft)',
+  color: 'var(--text-muted)',
+  border: '1px solid rgba(255, 255, 255, 0.06)'
+});
+
+export const WidgetDivider = styled('div', {
+  height: '1px',
+  background: 'rgba(255, 255, 255, 0.06)',
+  margin: 'var(--space-xs) 0'
+});
