@@ -22,14 +22,23 @@ const Close = styled('button', {
     padding: '4px 8px', borderRadius: '4px'
 });
 
+const ResizeHandle = styled('div', {
+    position: 'absolute', bottom: '0', right: '0', width: '16px', height: '16px',
+    cursor: 'nwse-resize', zIndex: '10'
+});
+
 export function AppWindow({ app, x, y, onClose }: { app: PmodApp; x: number; y: number; onClose: () => void }) {
     const pos = signal({ x, y });
+    const size = signal({ w: app.width || 400, h: app.height || 500 });
     const scale = spring(0, 500, 40);
     const opacity = spring(0, 500, 40);
     const dragging = signal(false);
+    const resizing = signal(false);
     const offset = signal({ x: 0, y: 0 });
+    const resizeStart = signal({ w: 0, h: 0, mx: 0, my: 0 });
     let rafId: number | null = null;
     let pendingPos: { x: number; y: number } | null = null;
+    let pendingSize: { w: number; h: number } | null = null;
 
     scale.set(1);
     opacity.set(1);
@@ -44,13 +53,10 @@ export function AppWindow({ app, x, y, onClose }: { app: PmodApp; x: number; y: 
 
     const handleMouseMove = (e: MouseEvent) => {
         if (dragging.get()) {
-            // Store the latest position
             pendingPos = {
                 x: e.clientX - offset.get().x,
                 y: e.clientY - offset.get().y
             };
-            
-            // Only schedule one RAF at a time
             if (rafId === null) {
                 rafId = requestAnimationFrame(() => {
                     if (pendingPos) {
@@ -61,10 +67,27 @@ export function AppWindow({ app, x, y, onClose }: { app: PmodApp; x: number; y: 
                 });
             }
         }
+        if (resizing.get()) {
+            const rs = resizeStart.get();
+            pendingSize = {
+                w: Math.max(200, rs.w + (e.clientX - rs.mx)),
+                h: Math.max(150, rs.h + (e.clientY - rs.my))
+            };
+            if (rafId === null) {
+                rafId = requestAnimationFrame(() => {
+                    if (pendingSize) {
+                        size.set(pendingSize);
+                        pendingSize = null;
+                    }
+                    rafId = null;
+                });
+            }
+        }
     };
 
     const handleMouseUp = () => {
         dragging.set(false);
+        resizing.set(false);
         if (rafId !== null) {
             cancelAnimationFrame(rafId);
             rafId = null;
@@ -73,10 +96,21 @@ export function AppWindow({ app, x, y, onClose }: { app: PmodApp; x: number; y: 
         document.removeEventListener('mouseup', handleMouseUp);
     }
     const startDrag = (e: MouseEvent) => {
+        e.preventDefault();
         handleMouseDown(e);
         document.addEventListener('mousemove', handleMouseMove);
         document.addEventListener('mouseup', handleMouseUp);
     }
+
+    const startResize = (e: MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        resizing.set(true);
+        const s = size.get();
+        resizeStart.set({ w: s.w, h: s.h, mx: e.clientX, my: e.clientY });
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+    };
 
     const close = () => {
         scale.set(0.8);
@@ -85,13 +119,14 @@ export function AppWindow({ app, x, y, onClose }: { app: PmodApp; x: number; y: 
     };
 
     return (
-        <Win style={() => `left:${pos.get().x}px;top:${pos.get().y}px;width:${app.width || 400}px;height:${app.height || 500}px;transform:scale(${scale.get()});opacity:${opacity.get()}`}>
+        <Win style={() => `left:${pos.get().x}px;top:${pos.get().y}px;width:${size.get().w}px;height:${size.get().h}px;transform:scale(${scale.get()});opacity:${opacity.get()}`}>
             <Bar onMouseDown={startDrag} style="cursor:move">
                 <span>{app.icon || '📦'}</span>
                 <span>{app.name}</span>
                 <Close onClick={close} onMouseDown={(e: MouseEvent) => e.stopPropagation()}>x</Close>
             </Bar>
             <Content>{app.content()}</Content>
+            <ResizeHandle onMouseDown={startResize} />
         </Win>
     );
 }
