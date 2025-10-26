@@ -1,6 +1,7 @@
 import { h, signal } from "fuse";
 import { styled } from "../pmod/styled";
 import { registry, PmodApp } from "../pmod/registry";
+import { AppWindow } from "./window";
 
 const Dock = styled('div', {
   position: 'fixed', bottom: 'var(--space-md)', left: '50%', transform: 'translateX(-50%)',
@@ -29,7 +30,7 @@ export function Desktop() {
     <div style="width:100vw;height:100vh;background:var(--bg-deep);position:relative;overflow:hidden">
       {() => wins.get().map(w => {
         const app = registry.get(w.app);
-        return app ? <Window app={app} x={w.x} y={w.y} onClose={() => wins.set(wins.get().filter(x => x.id !== w.id))} /> : null;
+        return app ? <AppWindow app={app} x={w.x} y={w.y} onClose={() => wins.set(wins.get().filter(x => x.id !== w.id))} /> : null;
       })}
       <Dock>{apps.map(app => <Icon onClick={() => open(app.name)} title={app.name}>{app.icon||'📦'}</Icon>)}</Dock>
     </div>

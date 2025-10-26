@@ -13,8 +13,12 @@ export function styled<V extends string = never>(
     if (variants && props.variant) {
       style = { ...style, ...variants[props.variant as V] };
     }
-    const { variant, ...rest } = props;
-    return h(tag, { ...rest, style: toStyleString(style) }, props.children);
+    const { variant, style: extraStyle, ...rest } = props;
+    const baseStyle = toStyleString(style);
+    const finalStyle = typeof extraStyle === 'function' 
+      ? () => baseStyle + ';' + extraStyle()
+      : baseStyle + (extraStyle ? `;${extraStyle}` : '');
+    return h(tag, { ...rest, style: finalStyle }, props.children);
   };
 }
 
