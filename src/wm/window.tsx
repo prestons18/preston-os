@@ -26,6 +26,8 @@ export function AppWindow({ app, x, y, onClose }: { app: PmodApp; x: number; y: 
     const pos = signal({ x, y });
     const dragging = signal(false);
     const offset = signal({ x: 0, y: 0 });
+    let rafId: number | null = null;
+    let pendingPos: { x: number; y: number } | null = null;
 
     const handleMouseDown = (e: MouseEvent) => {
         dragging.set(true);
@@ -37,15 +39,31 @@ export function AppWindow({ app, x, y, onClose }: { app: PmodApp; x: number; y: 
 
     const handleMouseMove = (e: MouseEvent) => {
         if (dragging.get()) {
-            pos.set({
+            // Store the latest position
+            pendingPos = {
                 x: e.clientX - offset.get().x,
                 y: e.clientY - offset.get().y
-            });
+            };
+            
+            // Only schedule one RAF at a time
+            if (rafId === null) {
+                rafId = requestAnimationFrame(() => {
+                    if (pendingPos) {
+                        pos.set(pendingPos);
+                        pendingPos = null;
+                    }
+                    rafId = null;
+                });
+            }
         }
     };
 
     const handleMouseUp = () => {
         dragging.set(false);
+        if (rafId !== null) {
+            cancelAnimationFrame(rafId);
+            rafId = null;
+        }
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
     }
