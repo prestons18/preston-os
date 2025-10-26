@@ -1,6 +1,6 @@
 import { signal } from "fuse";
 
-export function spring(initial: any, stiffness = 300, damping = 30) {
+export function spring(initial: any, stiffness = 300, damping = 50) {
   const val = signal(initial);
   let target = initial;
   let vel: any = typeof initial === 'number' ? 0 : Object.keys(initial).reduce((a, k) => ({ ...a, [k]: 0 }), {});

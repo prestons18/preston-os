@@ -12,7 +12,7 @@ const TabList = styled('div', {
 
 const TabButton = styled('button', {
     padding: 'var(--space-xs) var(--space-md)', background: 'transparent',
-    border: 'none', borderRadius: '20px', cursor: 'pointer',
+    border: 'none', borderRadius: 'var(--radius-soft)', cursor: 'pointer',
     fontSize: '13px', fontWeight: '500', color: 'var(--text-muted)',
     transition: 'all 0.2s'
 });

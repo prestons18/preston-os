@@ -2,8 +2,8 @@ import { styled } from "../../styled";
 
 const base = {
   display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-  borderRadius: 'var(--radius-base)', fontWeight: '500', textTransform: 'uppercase',
-  transition: 'all var(--motion-fast) ease-out', outline: 'none', letterSpacing: '0.5px',
+  borderRadius: 'var(--radius-base)', fontWeight: '500',
+  transition: 'all var(--motion-fast) ease-out', outline: 'none',
   border: 'none', cursor: 'pointer', fontFamily: 'inherit',
   fontSize: '14px', padding: '10px 24px', boxShadow: 'var(--shadow-soft)'
 };

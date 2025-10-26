@@ -30,8 +30,8 @@ const ResizeHandle = styled('div', {
 export function AppWindow({ app, x, y, onClose }: { app: PmodApp; x: number; y: number; onClose: () => void }) {
     const pos = signal({ x, y });
     const size = signal({ w: app.width || 400, h: app.height || 500 });
-    const scale = spring(0, 500, 40);
-    const opacity = spring(0, 500, 40);
+    const scale = spring(0, 500, 60);
+    const opacity = spring(0, 500, 60);
     
     let isDragging = false;
     let isResizing = false;
