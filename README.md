@@ -38,3 +38,5 @@ defineApp({
 });
 ```
 It's purpose is so I can build modular and reactive apps for this portfolio without repeating myself and boilerplate.
+
+### Window Manager
