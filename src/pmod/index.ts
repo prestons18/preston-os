@@ -9,3 +9,4 @@ export { Heading, Text, Muted } from "./primitives/components/text";
 export { Card, card } from "./primitives/components/card";
 export { Tabs } from "./primitives/components/tabs";
 export { Icon } from "./primitives/components/icon";
+export { Widget, WidgetHeader, WidgetTitle, WidgetContent, WidgetItem, WidgetItemTitle, WidgetItemMeta } from "./primitives/components/widget";
