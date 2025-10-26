@@ -3,7 +3,10 @@ import { build, context } from "esbuild";
 const isWatchMode = process.argv.includes("--watch");
 
 const options = {
-    entryPoints: ["src/index.ts", "src/styles/theme.css"],
+    entryPoints: {
+        index: "src/index.ts",
+        styles: "src/styles/theme.css"
+    },
     bundle: true,
     outdir: "dist",
     format: "esm",
@@ -14,6 +17,9 @@ const options = {
     platform: "browser",
     minify: false,
     logLevel: "info",
+    loader: {
+        ".css": "css"
+    }
 };
 
 if (isWatchMode) {
