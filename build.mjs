@@ -3,9 +3,9 @@ import { build, context } from "esbuild";
 const isWatchMode = process.argv.includes("--watch");
 
 const options = {
-    entryPoints: ["src/index.ts"],
+    entryPoints: ["src/index.ts", "src/styles/theme.css"],
     bundle: true,
-    outfile: "dist/index.js",
+    outdir: "dist",
     format: "esm",
     target: ["esnext"],
     sourcemap: true,
