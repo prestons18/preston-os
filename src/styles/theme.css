@@ -1,0 +1,53 @@
+:root {
+  /* Surfaces */
+  --bg-deep: #0F1415;
+  --bg-elev: #13191A;
+  --bg-soft: #161B1C;
+  --glass: rgba(255, 255, 255, 0.04);
+
+  /* Text */
+  --text-primary: #E8ECEB;
+  --text-muted: #A6ACA9;
+  --text-inverse: #0E1111;
+
+  /* Signature accents */
+  --accent-primary: #8C4B3B;
+  --accent-highlight: #C6A44A;
+  --accent-teal: #4B8B86;
+
+  /* UI tokens */
+  --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --shadow-lift: 0 18px 48px rgba(0, 0, 0, 0.7);
+  --radius-base: 12px;
+  --radius-soft: 18px;
+
+  /* Spacing scale */
+  --space-xs: 6px;
+  --space-sm: 12px;
+  --space-md: 20px;
+  --space-lg: 32px;
+
+  /* Motion */
+  --motion-fast: 160ms;
+  --motion-med: 260ms;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', system-ui, sans-serif;
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
