@@ -1,5 +1,4 @@
 import { build, context } from "esbuild";
-import { resolve } from "path";
 
 const isWatchMode = process.argv.includes("--watch");
 
@@ -15,9 +14,6 @@ const options = {
     platform: "browser",
     minify: false,
     logLevel: "info",
-    alias: {
-        "fuse": resolve("../fuse/src/fuse/index.ts")
-    }
 };
 
 if (isWatchMode) {
