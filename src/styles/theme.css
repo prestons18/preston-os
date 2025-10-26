@@ -1,25 +1,33 @@
 :root {
   /* Surfaces */
-  --bg-deep: #0F1415;
-  --bg-elev: #13191A;
-  --bg-soft: #161B1C;
-  --glass: rgba(255, 255, 255, 0.04);
+  --bg-deep: #0a0e1a;
+  --bg-elev: #0f1420;
+  --bg-soft: #151b2e;
+  --glass: rgba(99, 102, 241, 0.05);
 
   /* Text */
-  --text-primary: #E8ECEB;
-  --text-muted: #A6ACA9;
-  --text-inverse: #0E1111;
+  --text-primary: #e2e8f0;
+  --text-muted: #94a3b8;
+  --text-inverse: #0a0e1a;
 
-  /* Signature accents */
-  --accent-primary: #8C4B3B;
-  --accent-highlight: #C6A44A;
-  --accent-teal: #4B8B86;
+  /* Accents */
+  --accent-primary: #6366f1;
+  --accent-secondary: #8b5cf6;
+  --accent-highlight: #ec4899;
+  --accent-teal: #06b6d4;
+  --accent-success: #10b981;
+
+  /* Glows (don't like these, but it'll stay for now) */
+  --glow-primary: 0 0 20px rgba(99, 102, 241, 0.4);
+  --glow-secondary: 0 0 20px rgba(139, 92, 246, 0.4);
+  --glow-highlight: 0 0 20px rgba(236, 72, 153, 0.4);
 
   /* UI tokens */
-  --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.6);
-  --shadow-lift: 0 18px 48px rgba(0, 0, 0, 0.7);
-  --radius-base: 12px;
-  --radius-soft: 18px;
+  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-lift: 0 8px 16px rgba(0, 0, 0, 0.5);
+  --shadow-elevated: 0 12px 32px rgba(0, 0, 0, 0.6);
+  --radius-base: 8px;
+  --radius-soft: 12px;
 
   /* Spacing scale */
   --space-xs: 6px;
