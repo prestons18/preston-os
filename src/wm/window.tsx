@@ -1,6 +1,6 @@
 import { h, signal } from "fuse";
 import { PmodApp } from "../pmod/registry";
-import { styled } from "../pmod";
+import { styled, spring } from "../pmod";
 
 const Win = styled('div', {
     position: 'absolute', background: 'var(--bg-elev)', borderRadius: 'var(--radius-base)',
@@ -24,10 +24,15 @@ const Close = styled('button', {
 
 export function AppWindow({ app, x, y, onClose }: { app: PmodApp; x: number; y: number; onClose: () => void }) {
     const pos = signal({ x, y });
+    const scale = spring(0, 500, 40);
+    const opacity = spring(0, 500, 40);
     const dragging = signal(false);
     const offset = signal({ x: 0, y: 0 });
     let rafId: number | null = null;
     let pendingPos: { x: number; y: number } | null = null;
+
+    scale.set(1);
+    opacity.set(1);
 
     const handleMouseDown = (e: MouseEvent) => {
         dragging.set(true);
@@ -73,12 +78,18 @@ export function AppWindow({ app, x, y, onClose }: { app: PmodApp; x: number; y: 
         document.addEventListener('mouseup', handleMouseUp);
     }
 
+    const close = () => {
+        scale.set(0.8);
+        opacity.set(0);
+        setTimeout(onClose, 200);
+    };
+
     return (
-        <Win style={() => `left:${pos.get().x}px;top:${pos.get().y}px;width:${app.width || 400}px;height:${app.height || 500}px`}>
+        <Win style={() => `left:${pos.get().x}px;top:${pos.get().y}px;width:${app.width || 400}px;height:${app.height || 500}px;transform:scale(${scale.get()});opacity:${opacity.get()}`}>
             <Bar onMouseDown={startDrag} style="cursor:move">
                 <span>{app.icon || '📦'}</span>
                 <span>{app.name}</span>
-                <Close onClick={onClose} onMouseDown={(e: MouseEvent) => e.stopPropagation()}>x</Close>
+                <Close onClick={close} onMouseDown={(e: MouseEvent) => e.stopPropagation()}>x</Close>
             </Bar>
             <Content>{app.content()}</Content>
         </Win>

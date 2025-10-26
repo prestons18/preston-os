@@ -1,5 +1,6 @@
 export { defineApp, getApp, listApps } from "./registry";
 export { styled } from "./styled";
+export { spring } from "./primitives/spring";
 
 // Layout
 export { VStack, vstack } from "./primitives/layout/vstack";
