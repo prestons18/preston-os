@@ -12,10 +12,12 @@
   "author": "Preston Arnold",
   "license": "ISC",
   "devDependencies": {
+    "@types/node": "^24.9.1",
     "esbuild": "latest",
     "typescript": "latest"
   },
   "dependencies": {
-    "lucide": "^0.548.0"
+    "lucide": "^0.548.0",
+    "monaco-editor": "^0.54.0"
   }
 }

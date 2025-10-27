@@ -28,7 +28,9 @@
 
     "allowJs": false,
     "isolatedModules": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+
+    "baseUrl": "."
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
