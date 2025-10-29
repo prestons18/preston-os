@@ -1,12 +1,6 @@
 import { h, signal } from "fuse";
-import { defineWidget, Widget, WidgetHeader, WidgetTitle, WidgetContent, WidgetItem, WidgetItemTitle, WidgetItemMeta, WidgetAction, Icon } from "../pmod";
-
-interface BlogPost {
-  title: string;
-  link: string;
-  pubDate: string;
-  description?: string;
-}
+import { defineWidget, Widget, WidgetHeader, WidgetTitle, WidgetContent, WidgetItem, WidgetItemTitle, WidgetItemMeta, WidgetAction, Icon, WidgetBadge } from "../pmod";
+import { api, BlogPost } from "../api";
 
 defineWidget({
   name: "prsston",
@@ -19,13 +13,29 @@ defineWidget({
     const loading = signal(false);
     const error = signal<string | null>(null);
 
+    const fetchPosts = () => {
+      loading.set(true);
+      try {
+        const result = api.handle('/api/posts', {});
+        posts.set(result || []);
+      } catch (error) {
+        console.error('Failed to fetch posts:', error);
+        posts.set([]);
+      }
+      loading.set(false);
+    };
+
+    // Initial fetch
+    fetchPosts();
+
+
     const formatDate = (dateString: string) => {
       try {
         const date = new Date(dateString);
         const now = new Date();
         const diffMs = now.getTime() - date.getTime();
         const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-        
+
         if (diffDays === 0) return 'Today';
         if (diffDays === 1) return 'Yesterday';
         if (diffDays < 7) return `${diffDays} days ago`;
@@ -46,7 +56,7 @@ defineWidget({
           <WidgetTitle>
             <Icon name="Rss" size={16} />
             <span>prsston</span>
-            {/* <WidgetBadge>{() => posts.get().length}</WidgetBadge> */}
+            <WidgetBadge>{() => posts.get().length}</WidgetBadge>
           </WidgetTitle>
           <WidgetAction title="Refresh">
             <Icon name="RefreshCw" size={14} />
@@ -89,7 +99,7 @@ defineWidget({
 
             return postList.map(post => (
               <WidgetItem
-                onClick={() => openLink(post.link)}
+                onClick={() => openLink(`/blog/${post.slug}`)}
                 onMouseEnter={(e: MouseEvent) => {
                   (e.currentTarget as HTMLElement).style.background = 'var(--bg-soft)';
                 }}
@@ -98,7 +108,7 @@ defineWidget({
                 }}
               >
                 <WidgetItemTitle>{post.title}</WidgetItemTitle>
-                <WidgetItemMeta>{formatDate(post.pubDate)}</WidgetItemMeta>
+                <WidgetItemMeta>{formatDate(post.date)}</WidgetItemMeta>
               </WidgetItem>
             ));
           }}

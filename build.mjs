@@ -1,6 +1,22 @@
 import { build, context } from "esbuild";
+import { spawn } from "child_process";
+import { promisify } from "util";
 
+const execAsync = promisify(spawn);
 const isWatchMode = process.argv.includes("--watch");
+
+// Generate blog loader before building
+async function generateBlogLoader() {
+    return new Promise((resolve, reject) => {
+        const proc = spawn("node", ["scripts/generate-blog-loader.mjs"], {
+            stdio: "inherit"
+        });
+        proc.on("close", (code) => {
+            if (code === 0) resolve();
+            else reject(new Error(`Blog loader generation failed with code ${code}`));
+        });
+    });
+}
 
 const options = {
     entryPoints: {
@@ -21,6 +37,9 @@ const options = {
         ".css": "css"
     }
 };
+
+// Generate blog loader first
+await generateBlogLoader();
 
 if (isWatchMode) {
     const ctx = await context(options);
