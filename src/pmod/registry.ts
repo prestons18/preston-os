@@ -3,10 +3,11 @@ import { icons } from "lucide";
 
 export interface PmodApp {
     name: string;
-    content: () => Children;
+    content: (props?: any) => Children;
     icon?: keyof typeof icons;
     width?: number;
     height?: number;
+    showInDock?: boolean;
 }
 
 export interface PmodWidget {

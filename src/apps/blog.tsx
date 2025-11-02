@@ -1,6 +1,7 @@
 import { h, signal } from "fuse";
 import { defineApp, styled, VStack, HStack, Button, Heading, Text, Icon } from "../pmod";
 import { api, BlogPost } from "../api";
+import { openApp } from "../wm/desktop";
 
 const PostCard = styled('div', {
     padding: 'var(--space-md)',
@@ -23,13 +24,6 @@ const PostDescription = styled('div', {
     marginTop: 'var(--space-sm)',
 });
 
-const PostContent = styled('div', {
-    fontSize: 'var(--text-base)',
-    lineHeight: '1.6',
-    color: 'var(--text-primary)',
-    whiteSpace: 'pre-wrap',
-});
-
 defineApp({
     name: "Blog",
     icon: "BookOpen",
@@ -37,7 +31,6 @@ defineApp({
     height: 700,
     content() {
         const posts = signal<BlogPost[]>([]);
-        const selectedPost = signal<BlogPost | null>(null);
         const loading = signal(true);
 
         // Fetch posts from API
@@ -57,76 +50,41 @@ defineApp({
         fetchPosts();
 
         const viewPost = (post: BlogPost) => {
-            selectedPost.set(post);
-        };
-
-        const backToList = () => {
-            selectedPost.set(null);
+            openApp('Browser', { url: `/blog/${post.slug}` });
         };
 
         return (
-            <VStack gap={0} style="height: 100%">
+            <VStack gap={16} style="padding: var(--space-lg); overflow-y: auto; height: 100%">
+                <HStack gap={12} style="align-items: center; justify-content: space-between">
+                    <Heading>Blog Posts</Heading>
+                    <Button variant="ghost" onClick={fetchPosts} style="padding: var(--space-xs)">
+                        <Icon name="RefreshCw" size={16} />
+                    </Button>
+                </HStack>
+                
                 {() => {
-                    const post = selectedPost.get();
-                    
-                    if (post) {
-                        // Post detail view
-                        return (
-                            <VStack gap={16} style="padding: var(--space-lg); overflow-y: auto; height: 100%">
-                                <HStack gap={12} style="align-items: center">
-                                    <Button variant="ghost" onClick={backToList} style="padding: var(--space-xs)">
-                                        <Icon name="ArrowLeft" size={20} />
-                                    </Button>
-                                    <Heading style="flex: 1">{post.title}</Heading>
-                                </HStack>
-                                
-                                <PostDate>{post.date}</PostDate>
-                                
-                                {post.description && (
-                                    <PostDescription>{post.description}</PostDescription>
-                                )}
-                                
-                                <PostContent>{post.content}</PostContent>
-                            </VStack>
-                        );
+                    if (loading.get()) {
+                        return <Text>Loading posts...</Text>;
                     }
                     
-                    // Posts list view
+                    const postList = posts.get();
+                    if (postList.length === 0) {
+                        return <Text style="color: var(--text-muted)">No blog posts found.</Text>;
+                    }
+                    
                     return (
-                        <VStack gap={16} style="padding: var(--space-lg); overflow-y: auto; height: 100%">
-                            <HStack gap={12} style="align-items: center; justify-content: space-between">
-                                <Heading>Blog Posts</Heading>
-                                <Button variant="ghost" onClick={fetchPosts} style="padding: var(--space-xs)">
-                                    <Icon name="RefreshCw" size={16} />
-                                </Button>
-                            </HStack>
-                            
-                            {() => {
-                                if (loading.get()) {
-                                    return <Text>Loading posts...</Text>;
-                                }
-                                
-                                const postList = posts.get();
-                                if (postList.length === 0) {
-                                    return <Text style="color: var(--text-muted)">No blog posts found.</Text>;
-                                }
-                                
-                                return (
-                                    <VStack gap={12}>
-                                        {postList.map(p => (
-                                            <PostCard onClick={() => viewPost(p)}>
-                                                <Heading style="font-size: var(--text-lg); margin: 0">
-                                                    {p.title}
-                                                </Heading>
-                                                <PostDate>{p.date}</PostDate>
-                                                {p.description && (
-                                                    <PostDescription>{p.description}</PostDescription>
-                                                )}
-                                            </PostCard>
-                                        ))}
-                                    </VStack>
-                                );
-                            }}
+                        <VStack gap={12}>
+                            {postList.map(p => (
+                                <PostCard onClick={() => viewPost(p)}>
+                                    <Heading style="font-size: var(--text-lg); margin: 0">
+                                        {p.title}
+                                    </Heading>
+                                    <PostDate>{p.date}</PostDate>
+                                    {p.description && (
+                                        <PostDescription>{p.description}</PostDescription>
+                                    )}
+                                </PostCard>
+                            ))}
                         </VStack>
                     );
                 }}

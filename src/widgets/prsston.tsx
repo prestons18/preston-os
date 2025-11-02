@@ -1,6 +1,7 @@
 import { h, signal } from "fuse";
 import { defineWidget, Widget, WidgetHeader, WidgetTitle, WidgetContent, WidgetItem, WidgetItemTitle, WidgetItemMeta, WidgetAction, Icon, WidgetBadge } from "../pmod";
 import { api, BlogPost } from "../api";
+import { openApp } from "../wm/desktop";
 
 defineWidget({
   name: "prsston",
@@ -46,8 +47,8 @@ defineWidget({
       }
     };
 
-    const openLink = (url: string) => {
-      window.open(url, '_blank', 'noopener,noreferrer');
+    const openPost = (slug: string) => {
+      openApp('Browser', { url: `/blog/${slug}` });
     };
 
     return (
@@ -99,7 +100,7 @@ defineWidget({
 
             return postList.map(post => (
               <WidgetItem
-                onClick={() => openLink(`/blog/${post.slug}`)}
+                onClick={() => openPost(post.slug)}
                 onMouseEnter={(e: MouseEvent) => {
                   (e.currentTarget as HTMLElement).style.background = 'var(--bg-soft)';
                 }}

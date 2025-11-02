@@ -27,7 +27,7 @@ const ResizeHandle = styled('div', {
     cursor: 'nwse-resize', zIndex: '10'
 });
 
-export function AppWindow({ app, x, y, onClose }: { app: PmodApp; x: number; y: number; onClose: () => void }) {
+export function AppWindow({ app, x, y, props, onClose }: { app: PmodApp; x: number; y: number; props?: any; onClose: () => void }) {
     const pos = signal({ x, y });
     const size = signal({ w: app.width || 400, h: app.height || 500 });
     const scale = spring(0, 500, 60);
@@ -140,7 +140,7 @@ export function AppWindow({ app, x, y, onClose }: { app: PmodApp; x: number; y: 
                     <Icon name="X" size={16} />
                 </Close>
             </Bar>
-            <Content>{app.content()}</Content>
+            <Content>{app.content(props)}</Content>
             <ResizeHandle onMouseDown={startResize} />
         </Win>
     );

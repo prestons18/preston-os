@@ -16,6 +16,7 @@
     "typescript": "latest"
   },
   "dependencies": {
-    "lucide": "^0.548.0"
+    "lucide": "^0.548.0",
+    "marked": "^16.4.1"
   }
 }

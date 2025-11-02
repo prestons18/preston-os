@@ -37,29 +37,37 @@ type WindowState = {
   app: string;
   x: number;
   y: number;
+  props?: any;
 };
 
+// Global window state
+const wins = signal<WindowState[]>([]);
+
+// Global function to open apps
+export function openApp(name: string, props?: any) {
+  const n = wins.get().length;
+  const id = `${name}-${Date.now()}`;
+
+  wins.set([
+    ...wins.get(),
+    {
+      key: id,
+      id: id,
+      app: name,
+      x: 100 + n * 30,
+      y: 80 + n * 30,
+      props
+    }
+  ]);
+}
+
 export function Desktop() {
-  const wins = signal<WindowState[]>([]);
   const apps = registry.list();
   const widgets = widgetRegistry.list();
 
   const open = (name: string) => {
     if (wins.get().find(w => w.app === name)) return;
-
-    const n = wins.get().length;
-    const id = `${name}-${Date.now()}`;
-
-    wins.set([
-      ...wins.get(),
-      {
-        key: id,
-        id: id,
-        app: name,
-        x: 100 + n * 30,
-        y: 80 + n * 30
-      }
-    ]);
+    openApp(name);
   };
 
   return (
@@ -75,6 +83,7 @@ export function Desktop() {
               app={app}
               x={w.x}
               y={w.y}
+              props={w.props}
               onClose={() => wins.set(wins.get().filter(x => x.id !== w.id))}
             />
           );
@@ -84,7 +93,7 @@ export function Desktop() {
       {widgets.map((widget, idx) => widget.content({ x: window.innerWidth - 340, y: 20 + idx * 420 }))} 
 
       <Dock>
-        {apps.map(app => (
+        {apps.filter(app => app.showInDock !== false).map(app => (
           <DockIcon onClick={() => open(app.name)} title={app.name}>
             {app.icon ? (
               <Icon name={app.icon} size={28} />

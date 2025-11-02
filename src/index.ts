@@ -5,6 +5,7 @@ import "./blog/loader";
 import "./apps/notes";
 import "./apps/about";
 import "./apps/blog";
+import "./apps/browser";
 
 const root = document.getElementById("root");
 if (!root) throw new Error("Root element not found");
