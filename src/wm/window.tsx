@@ -37,6 +37,11 @@ export function AppWindow({ app, x, y, zIndex, minimised, props, onClose, onMini
     const scale = spring(0, 500, 60);
     const opacity = spring(0, 500, 60);
     const shouldHide = signal(false);
+    const isMaximised = signal(false);
+    
+    // Store original position/size for restoring from maximise
+    let savedPos = { x, y };
+    let savedSize = { w: app.width || 400, h: app.height || 500 };
     
     let isDragging = false;
     let isResizing = false;
@@ -103,11 +108,29 @@ export function AppWindow({ app, x, y, zIndex, minimised, props, onClose, onMini
         e.preventDefault();
         e.stopPropagation();
         onFocus();
+        
+        // If maximised, unmaximise first and adjust drag offset
+        if (isMaximised.get()) {
+            const currentSize = size.get();
+            const clickRatio = e.clientX / currentSize.w;
+            
+            isMaximised.set(false);
+            pos.set(savedPos);
+            size.set(savedSize);
+            
+            // Adjust drag offset so window follows cursor proportionally
+            dragOffset = {
+                x: savedSize.w * clickRatio,
+                y: e.clientY - savedPos.y
+            };
+        } else {
+            dragOffset = {
+                x: e.clientX - pos.get().x,
+                y: e.clientY - pos.get().y
+            };
+        }
+        
         isDragging = true;
-        dragOffset = {
-            x: e.clientX - pos.get().x,
-            y: e.clientY - pos.get().y
-        };
         document.addEventListener('mousemove', handleMouseMove, { passive: false });
         document.addEventListener('mouseup', handleMouseUp);
     };
@@ -116,6 +139,10 @@ export function AppWindow({ app, x, y, zIndex, minimised, props, onClose, onMini
         e.preventDefault();
         e.stopPropagation();
         onFocus();
+        
+        // Can't resize when maximised
+        if (isMaximised.get()) return;
+        
         isResizing = true;
         const s = size.get();
         resizeStart = { w: s.w, h: s.h, mx: e.clientX, my: e.clientY };
@@ -132,6 +159,22 @@ export function AppWindow({ app, x, y, zIndex, minimised, props, onClose, onMini
     const minimise = () => {
         if (onMinimise) {
             onMinimise();
+        }
+    };
+    
+    const toggleMaximise = () => {
+        if (isMaximised.get()) {
+            // Restore to saved position/size
+            isMaximised.set(false);
+            pos.set(savedPos);
+            size.set(savedSize);
+        } else {
+            // Save current position/size and maximise
+            savedPos = pos.get();
+            savedSize = size.get();
+            isMaximised.set(true);
+            pos.set({ x: 0, y: 0 });
+            size.set({ w: window.innerWidth, h: window.innerHeight });
         }
     };
     
@@ -176,12 +219,14 @@ export function AppWindow({ app, x, y, zIndex, minimised, props, onClose, onMini
         <Win 
             style={() => {
                 const hidden = shouldHide.get();
+                const maximised = isMaximised.get();
                 const baseStyle = `left:${pos.get().x}px;top:${pos.get().y}px;width:${size.get().w}px;height:${size.get().h}px;transform:scale(${scale.get()});opacity:${opacity.get()};z-index:${typeof zIndex === 'function' ? zIndex() : zIndex}`;
-                return hidden ? `${baseStyle};pointer-events:none;visibility:hidden;` : baseStyle;
+                const borderRadius = maximised ? 'border-radius:0;' : '';
+                return hidden ? `${baseStyle};${borderRadius};pointer-events:none;visibility:hidden;` : `${baseStyle};${borderRadius}`;
             }}
             onMouseDown={onFocus}
         >
-            <Bar onMouseDown={startDrag} style="cursor:move">
+            <Bar onMouseDown={startDrag} onDblClick={toggleMaximise} style={() => isMaximised.get() ? "cursor:default" : "cursor:move"}>
                 {app.icon ? <Icon name={app.icon} size={18} /> : <Icon name="Package" size={18} />}
                 <span>{app.name}</span>
                 <WindowActions>
@@ -190,13 +235,16 @@ export function AppWindow({ app, x, y, zIndex, minimised, props, onClose, onMini
                             <Icon name="Minus" size={16} />
                         </WindowButton>
                     )}
+                    <WindowButton onClick={toggleMaximise} onMouseDown={(e: MouseEvent) => e.stopPropagation()}>
+                        {() => isMaximised.get() ? <Icon name="Minimize2" size={16} /> : <Icon name="Maximize2" size={16} />}
+                    </WindowButton>
                     <WindowButton onClick={close} onMouseDown={(e: MouseEvent) => e.stopPropagation()}>
                         <Icon name="X" size={16} />
                     </WindowButton>
                 </WindowActions>
             </Bar>
             <Content onMouseDown={onFocus}>{app.content(props)}</Content>
-            <ResizeHandle onMouseDown={startResize} />
+            {() => !isMaximised.get() && <ResizeHandle onMouseDown={startResize} />}
         </Win>
     );
 }
