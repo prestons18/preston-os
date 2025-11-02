@@ -1,4 +1,4 @@
-import { h, signal, onCleanup } from "fuse";
+import { h, signal, onCleanup, effect } from "fuse";
 import { PmodApp } from "../pmod/registry";
 import { styled, spring, Icon } from "../pmod";
 
@@ -16,10 +16,14 @@ const Bar = styled('div', {
 
 const Content = styled('div', { flex: '1', overflow: 'auto' });
 
-const Close = styled('button', {
-    marginLeft: 'auto', background: 'transparent', border: 'none',
+const WindowButton = styled('button', {
+    background: 'transparent', border: 'none',
     color: 'var(--text-muted)', cursor: 'pointer',
     padding: '4px 8px', borderRadius: '4px', display: 'flex', alignItems: 'center'
+});
+
+const WindowActions = styled('div', {
+    marginLeft: 'auto', display: 'flex', gap: '4px'
 });
 
 const ResizeHandle = styled('div', {
@@ -27,11 +31,12 @@ const ResizeHandle = styled('div', {
     cursor: 'nwse-resize', zIndex: '10'
 });
 
-export function AppWindow({ app, x, y, zIndex, props, onClose, onFocus }: { app: PmodApp; x: number; y: number; zIndex: number | (() => number); props?: any; onClose: () => void; onFocus: () => void }) {
+export function AppWindow({ app, x, y, zIndex, minimised, props, onClose, onMinimise, onFocus }: { app: PmodApp; x: number; y: number; zIndex: number | (() => number); minimised?: boolean | (() => boolean); props?: any; onClose: () => void; onMinimise?: () => void; onFocus: () => void }) {
     const pos = signal({ x, y });
     const size = signal({ w: app.width || 400, h: app.height || 500 });
     const scale = spring(0, 500, 60);
     const opacity = spring(0, 500, 60);
+    const shouldHide = signal(false);
     
     let isDragging = false;
     let isResizing = false;
@@ -124,6 +129,37 @@ export function AppWindow({ app, x, y, zIndex, props, onClose, onFocus }: { app:
         setTimeout(onClose, 200);
     };
 
+    const minimise = () => {
+        if (onMinimise) {
+            onMinimise();
+        }
+    };
+    
+    // Watch minimised state to manage animation and visibility
+    let hideTimeout: number | null = null;
+    effect(() => {
+        const isMinimised = typeof minimised === 'function' ? minimised() : (minimised || false);
+        
+        if (hideTimeout !== null) {
+            clearTimeout(hideTimeout);
+            hideTimeout = null;
+        }
+        
+        if (isMinimised) {
+            // Start animation, then hide after animation completes
+            scale.set(0.8);
+            opacity.set(0);
+            hideTimeout = window.setTimeout(() => {
+                shouldHide.set(true);
+            }, 200);
+        } else {
+            // Show immediately and restore animation
+            shouldHide.set(false);
+            scale.set(1);
+            opacity.set(1);
+        }
+    });
+
     // Clean up document event listeners when component is destroyed
     onCleanup(() => {
         document.removeEventListener('mousemove', handleMouseMove);
@@ -131,19 +167,33 @@ export function AppWindow({ app, x, y, zIndex, props, onClose, onFocus }: { app:
         if (rafId !== null) {
             cancelAnimationFrame(rafId);
         }
+        if (hideTimeout !== null) {
+            clearTimeout(hideTimeout);
+        }
     });
 
     return (
         <Win 
-            style={() => `left:${pos.get().x}px;top:${pos.get().y}px;width:${size.get().w}px;height:${size.get().h}px;transform:scale(${scale.get()});opacity:${opacity.get()};z-index:${typeof zIndex === 'function' ? zIndex() : zIndex}`}
+            style={() => {
+                const hidden = shouldHide.get();
+                const baseStyle = `left:${pos.get().x}px;top:${pos.get().y}px;width:${size.get().w}px;height:${size.get().h}px;transform:scale(${scale.get()});opacity:${opacity.get()};z-index:${typeof zIndex === 'function' ? zIndex() : zIndex}`;
+                return hidden ? `${baseStyle};pointer-events:none;visibility:hidden;` : baseStyle;
+            }}
             onMouseDown={onFocus}
         >
             <Bar onMouseDown={startDrag} style="cursor:move">
                 {app.icon ? <Icon name={app.icon} size={18} /> : <Icon name="Package" size={18} />}
                 <span>{app.name}</span>
-                <Close onClick={close} onMouseDown={(e: MouseEvent) => e.stopPropagation()}>
-                    <Icon name="X" size={16} />
-                </Close>
+                <WindowActions>
+                    {onMinimise && (
+                        <WindowButton onClick={minimise} onMouseDown={(e: MouseEvent) => e.stopPropagation()}>
+                            <Icon name="Minus" size={16} />
+                        </WindowButton>
+                    )}
+                    <WindowButton onClick={close} onMouseDown={(e: MouseEvent) => e.stopPropagation()}>
+                        <Icon name="X" size={16} />
+                    </WindowButton>
+                </WindowActions>
             </Bar>
             <Content onMouseDown={onFocus}>{app.content(props)}</Content>
             <ResizeHandle onMouseDown={startResize} />
