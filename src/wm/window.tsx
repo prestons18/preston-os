@@ -50,6 +50,7 @@ export function AppWindow({ app, x, y, zIndex, minimised, props, onClose, onMini
     let rafId: number | null = null;
     let pendingPos: { x: number; y: number } | null = null;
     let pendingSize: { w: number; h: number } | null = null;
+    let touchId: number | null = null;
 
     scale.set(1);
     opacity.set(1);
@@ -92,14 +93,80 @@ export function AppWindow({ app, x, y, zIndex, minimised, props, onClose, onMini
             }
         }
     };
+    
+    const handleTouchMove = (e: TouchEvent) => {
+        if (!isDragging && !isResizing) return;
+        
+        // Find the touch that started the drag/resize
+        const touchIndex = Array.from(e.touches).findIndex(touch => touch.identifier === touchId);
+        if (touchIndex === -1) return;
+        
+        const touch = e.touches[touchIndex];
+        
+        if (isDragging) {
+            e.preventDefault();
+            const newX = touch.clientX - dragOffset.x;
+            const newY = touch.clientY - dragOffset.y;
+            const maxX = innerWidth - size.get().w;
+            const maxY = innerHeight - 40;
+            pendingPos = {
+                x: Math.max(0, Math.min(newX, maxX)),
+                y: Math.max(0, Math.min(newY, maxY))
+            };
+            if (rafId === null) {
+                rafId = requestAnimationFrame(() => {
+                    if (pendingPos) {
+                        pos.set(pendingPos);
+                        pendingPos = null;
+                    }
+                    rafId = null;
+                });
+            }
+        }
+        if (isResizing) {
+            e.preventDefault();
+            pendingSize = {
+                w: Math.max(200, resizeStart.w + (touch.clientX - resizeStart.mx)),
+                h: Math.max(150, resizeStart.h + (touch.clientY - resizeStart.my))
+            };
+            if (rafId === null) {
+                rafId = requestAnimationFrame(() => {
+                    if (pendingSize) {
+                        size.set(pendingSize);
+                        pendingSize = null;
+                    }
+                    rafId = null;
+                });
+            }
+        }
+    };
 
     const handleMouseUp = () => {
         isDragging = false;
         isResizing = false;
+        touchId = null;
         if (rafId !== null) {
             cancelAnimationFrame(rafId);
             rafId = null;
         }
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+        document.removeEventListener('touchmove', handleTouchMove);
+        document.removeEventListener('touchend', handleTouchEnd);
+        document.removeEventListener('touchcancel', handleTouchEnd);
+    };
+    
+    const handleTouchEnd = () => {
+        isDragging = false;
+        isResizing = false;
+        touchId = null;
+        if (rafId !== null) {
+            cancelAnimationFrame(rafId);
+            rafId = null;
+        }
+        document.removeEventListener('touchmove', handleTouchMove);
+        document.removeEventListener('touchend', handleTouchEnd);
+        document.removeEventListener('touchcancel', handleTouchEnd);
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
     };
@@ -134,6 +201,43 @@ export function AppWindow({ app, x, y, zIndex, minimised, props, onClose, onMini
         document.addEventListener('mousemove', handleMouseMove, { passive: false });
         document.addEventListener('mouseup', handleMouseUp);
     };
+    
+    const startTouchDrag = (e: TouchEvent) => {
+        if (e.touches.length !== 1) return;
+        
+        e.preventDefault();
+        e.stopPropagation();
+        onFocus();
+        
+        const touch = e.touches[0];
+        touchId = touch.identifier;
+        
+        // If maximised, unmaximise first and adjust drag offset
+        if (isMaximised.get()) {
+            const currentSize = size.get();
+            const touchRatio = touch.clientX / currentSize.w;
+            
+            isMaximised.set(false);
+            pos.set(savedPos);
+            size.set(savedSize);
+            
+            // Adjust drag offset so window follows touch proportionally
+            dragOffset = {
+                x: savedSize.w * touchRatio,
+                y: touch.clientY - savedPos.y
+            };
+        } else {
+            dragOffset = {
+                x: touch.clientX - pos.get().x,
+                y: touch.clientY - pos.get().y
+            };
+        }
+        
+        isDragging = true;
+        document.addEventListener('touchmove', handleTouchMove, { passive: false });
+        document.addEventListener('touchend', handleTouchEnd);
+        document.addEventListener('touchcancel', handleTouchEnd);
+    };
 
     const startResize = (e: MouseEvent) => {
         e.preventDefault();
@@ -148,6 +252,27 @@ export function AppWindow({ app, x, y, zIndex, minimised, props, onClose, onMini
         resizeStart = { w: s.w, h: s.h, mx: e.clientX, my: e.clientY };
         document.addEventListener('mousemove', handleMouseMove, { passive: false });
         document.addEventListener('mouseup', handleMouseUp);
+    };
+    
+    const startTouchResize = (e: TouchEvent) => {
+        if (e.touches.length !== 1) return;
+        
+        e.preventDefault();
+        e.stopPropagation();
+        onFocus();
+        
+        // Can't resize when maximised
+        if (isMaximised.get()) return;
+        
+        const touch = e.touches[0];
+        touchId = touch.identifier;
+        
+        isResizing = true;
+        const s = size.get();
+        resizeStart = { w: s.w, h: s.h, mx: touch.clientX, my: touch.clientY };
+        document.addEventListener('touchmove', handleTouchMove, { passive: false });
+        document.addEventListener('touchend', handleTouchEnd);
+        document.addEventListener('touchcancel', handleTouchEnd);
     };
 
     const close = () => {
@@ -207,6 +332,9 @@ export function AppWindow({ app, x, y, zIndex, minimised, props, onClose, onMini
     onCleanup(() => {
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
+        document.removeEventListener('touchmove', handleTouchMove);
+        document.removeEventListener('touchend', handleTouchEnd);
+        document.removeEventListener('touchcancel', handleTouchEnd);
         if (rafId !== null) {
             cancelAnimationFrame(rafId);
         }
@@ -225,26 +353,39 @@ export function AppWindow({ app, x, y, zIndex, minimised, props, onClose, onMini
                 return hidden ? `${baseStyle};${borderRadius};pointer-events:none;visibility:hidden;` : `${baseStyle};${borderRadius}`;
             }}
             onMouseDown={onFocus}
+            onTouchStart={onFocus}
         >
-            <Bar onMouseDown={startDrag} onDblClick={toggleMaximise} style={() => isMaximised.get() ? "cursor:default" : "cursor:move"}>
+            <Bar onMouseDown={startDrag} onTouchStart={startTouchDrag} onDblClick={toggleMaximise} style={() => isMaximised.get() ? "cursor:default" : "cursor:move"}>
                 {app.icon ? <Icon name={app.icon} size={18} /> : <Icon name="Package" size={18} />}
                 <span>{app.name}</span>
                 <WindowActions>
                     {onMinimise && (
-                        <WindowButton onClick={minimise} onMouseDown={(e: MouseEvent) => e.stopPropagation()}>
+                        <WindowButton 
+                            onClick={minimise} 
+                            onMouseDown={(e: MouseEvent) => e.stopPropagation()}
+                            onTouchStart={(e: TouchEvent) => e.stopPropagation()}
+                        >
                             <Icon name="Minus" size={16} />
                         </WindowButton>
                     )}
-                    <WindowButton onClick={toggleMaximise} onMouseDown={(e: MouseEvent) => e.stopPropagation()}>
+                    <WindowButton 
+                        onClick={toggleMaximise} 
+                        onMouseDown={(e: MouseEvent) => e.stopPropagation()}
+                        onTouchStart={(e: TouchEvent) => e.stopPropagation()}
+                    >
                         {() => isMaximised.get() ? <Icon name="Minimize2" size={16} /> : <Icon name="Maximize2" size={16} />}
                     </WindowButton>
-                    <WindowButton onClick={close} onMouseDown={(e: MouseEvent) => e.stopPropagation()}>
+                    <WindowButton 
+                        onClick={close} 
+                        onMouseDown={(e: MouseEvent) => e.stopPropagation()}
+                        onTouchStart={(e: TouchEvent) => e.stopPropagation()}
+                    >
                         <Icon name="X" size={16} />
                     </WindowButton>
                 </WindowActions>
             </Bar>
-            <Content onMouseDown={onFocus}>{app.content(props)}</Content>
-            {() => !isMaximised.get() && <ResizeHandle onMouseDown={startResize} />}
+            <Content onMouseDown={onFocus} onTouchStart={onFocus}>{app.content(props)}</Content>
+            {() => !isMaximised.get() && <ResizeHandle onMouseDown={startResize} onTouchStart={startTouchResize} />}
         </Win>
     );
 }
