@@ -37,16 +37,22 @@ type WindowState = {
   app: string;
   x: number;
   y: number;
+  zIndex: number;
   props?: any;
 };
 
 // Global window state
 const wins = signal<WindowState[]>([]);
+let highestZIndex = 100;
+const zIndexMap = new Map<string, ReturnType<typeof signal<number>>>();
 
 // Global function to open apps
 export function openApp(name: string, props?: any) {
   const n = wins.get().length;
   const id = `${name}-${Date.now()}`;
+  highestZIndex++;
+  
+  zIndexMap.set(id, signal(highestZIndex));
 
   wins.set([
     ...wins.get(),
@@ -56,9 +62,28 @@ export function openApp(name: string, props?: any) {
       app: name,
       x: 100 + n * 30,
       y: 80 + n * 30,
+      zIndex: highestZIndex,
       props
     }
   ]);
+}
+
+// Bring window to front
+function bringToFront(id: string) {
+  const zIndexSignal = zIndexMap.get(id);
+  if (!zIndexSignal) return;
+  
+  // Only update if not already on top
+  const currentWins = wins.get();
+  const maxZ = Math.max(...currentWins.map(w => {
+    const sig = zIndexMap.get(w.id);
+    return sig ? sig.get() : w.zIndex;
+  }));
+  
+  if (zIndexSignal.get() === maxZ) return;
+  
+  highestZIndex++;
+  zIndexSignal.set(highestZIndex);
 }
 
 export function Desktop() {
@@ -78,13 +103,21 @@ export function Desktop() {
           const app = registry.get(w.app);
           if (!app) return document.createTextNode('');
 
+          const zIndexSignal = zIndexMap.get(w.id);
+          if (!zIndexSignal) return document.createTextNode('');
+          
           return (
             <AppWindow
               app={app}
               x={w.x}
               y={w.y}
+              zIndex={() => zIndexSignal.get()}
               props={w.props}
-              onClose={() => wins.set(wins.get().filter(x => x.id !== w.id))}
+              onClose={() => {
+                zIndexMap.delete(w.id);
+                wins.set(wins.get().filter(x => x.id !== w.id));
+              }}
+              onFocus={() => bringToFront(w.id)}
             />
           );
         }]

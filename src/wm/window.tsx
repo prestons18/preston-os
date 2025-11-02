@@ -27,7 +27,7 @@ const ResizeHandle = styled('div', {
     cursor: 'nwse-resize', zIndex: '10'
 });
 
-export function AppWindow({ app, x, y, props, onClose }: { app: PmodApp; x: number; y: number; props?: any; onClose: () => void }) {
+export function AppWindow({ app, x, y, zIndex, props, onClose, onFocus }: { app: PmodApp; x: number; y: number; zIndex: number | (() => number); props?: any; onClose: () => void; onFocus: () => void }) {
     const pos = signal({ x, y });
     const size = signal({ w: app.width || 400, h: app.height || 500 });
     const scale = spring(0, 500, 60);
@@ -97,6 +97,7 @@ export function AppWindow({ app, x, y, props, onClose }: { app: PmodApp; x: numb
     const startDrag = (e: MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
+        onFocus();
         isDragging = true;
         dragOffset = {
             x: e.clientX - pos.get().x,
@@ -109,6 +110,7 @@ export function AppWindow({ app, x, y, props, onClose }: { app: PmodApp; x: numb
     const startResize = (e: MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
+        onFocus();
         isResizing = true;
         const s = size.get();
         resizeStart = { w: s.w, h: s.h, mx: e.clientX, my: e.clientY };
@@ -132,7 +134,10 @@ export function AppWindow({ app, x, y, props, onClose }: { app: PmodApp; x: numb
     });
 
     return (
-        <Win style={() => `left:${pos.get().x}px;top:${pos.get().y}px;width:${size.get().w}px;height:${size.get().h}px;transform:scale(${scale.get()});opacity:${opacity.get()}`}>
+        <Win 
+            style={() => `left:${pos.get().x}px;top:${pos.get().y}px;width:${size.get().w}px;height:${size.get().h}px;transform:scale(${scale.get()});opacity:${opacity.get()};z-index:${typeof zIndex === 'function' ? zIndex() : zIndex}`}
+            onMouseDown={onFocus}
+        >
             <Bar onMouseDown={startDrag} style="cursor:move">
                 {app.icon ? <Icon name={app.icon} size={18} /> : <Icon name="Package" size={18} />}
                 <span>{app.name}</span>
@@ -140,7 +145,7 @@ export function AppWindow({ app, x, y, props, onClose }: { app: PmodApp; x: numb
                     <Icon name="X" size={16} />
                 </Close>
             </Bar>
-            <Content>{app.content(props)}</Content>
+            <Content onMouseDown={onFocus}>{app.content(props)}</Content>
             <ResizeHandle onMouseDown={startResize} />
         </Win>
     );
