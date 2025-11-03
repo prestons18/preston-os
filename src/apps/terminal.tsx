@@ -1,0 +1,91 @@
+import { h, signal } from "fuse";
+import { defineApp, styled } from "../pmod";
+
+const Container = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  height: '100%',
+  background: '#1a1b26',
+  color: '#a9b1d6',
+  fontFamily: 'monospace',
+  fontSize: '14px',
+  padding: '12px',
+});
+
+const Output = styled('div', {
+  flex: '1',
+  overflowY: 'auto',
+  whiteSpace: 'pre-wrap',
+  marginBottom: '12px',
+});
+
+const InputLine = styled('div', {
+  display: 'flex',
+  gap: '8px',
+});
+
+const Prompt = styled('span', {
+  color: '#9ece6a',
+});
+
+const Input = styled('input', {
+  flex: '1',
+  background: 'transparent',
+  border: 'none',
+  color: '#c0caf5',
+  fontFamily: 'inherit',
+  fontSize: 'inherit',
+  outline: 'none',
+});
+
+defineApp({
+  name: "Terminal",
+  icon: "Terminal",
+  width: 600,
+  height: 400,
+  content() {
+    const lines = signal<string[]>(['Type "help" for commands\n']);
+    const input = signal("");
+
+    const commands: Record<string, (args: string[]) => string> = {
+      help: () => 'Commands: help, clear, echo, date, ls',
+      clear: () => { lines.set([]); return ''; },
+      echo: (args) => args.join(' '),
+      date: () => new Date().toString(),
+      ls: () => 'Documents  Downloads  Projects',
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        const cmd = input.get().trim();
+        if (cmd) {
+          const parts = cmd.split(/\s+/);
+          const command = parts[0];
+          const args = parts.slice(1);
+          
+          const output = commands[command] 
+            ? commands[command](args) 
+            : `Command not found: ${command}`;
+          
+          lines.set([...lines.get(), `$ ${cmd}`, output + '\n']);
+        }
+        input.set('');
+      }
+    };
+
+    return (
+      <Container>
+        <Output>{() => lines.get().join('\n')}</Output>
+        <InputLine>
+          <Prompt>$</Prompt>
+          <Input 
+            value={input}
+            onInput={(e: Event) => input.set((e.target as HTMLInputElement).value)}
+            onKeyDown={handleKeyDown}
+            autofocus
+          />
+        </InputLine>
+      </Container>
+    );
+  },
+});
