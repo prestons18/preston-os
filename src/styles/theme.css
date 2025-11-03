@@ -5,6 +5,10 @@
   --bg-elev: #0f1420;
   --bg-soft: #151b2e;
   --glass: rgba(99, 102, 241, 0.05);
+  
+  /* Mobile surfaces */
+  --mobile-statusbar: rgba(10, 14, 26, 0.9);
+  --mobile-dock: rgba(15, 20, 32, 0.85);
 
   /* Text */
   --text-primary: #e2e8f0;
@@ -72,4 +76,44 @@ body {
 #root {
   width: 100%;
   height: 100%;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  :root {
+    --space-md: 16px;
+    --space-lg: 24px;
+  }
+  
+  /* Prevent overscroll behavior */
+  body {
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Improve touch targets */
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Add safe area insets for mobile devices with notches */
+@supports (padding: max(0px)) {
+  .mobile-container {
+    padding-left: max(var(--space-sm), env(safe-area-inset-left));
+    padding-right: max(var(--space-sm), env(safe-area-inset-right));
+    padding-top: max(0px, env(safe-area-inset-top));
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  }
+  
+  .mobile-statusbar {
+    padding-top: max(0px, env(safe-area-inset-top));
+    height: calc(28px + max(0px, env(safe-area-inset-top)));
+  }
+  
+  .mobile-dock {
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+    height: calc(70px + max(0px, env(safe-area-inset-bottom)));
+  }
 }
