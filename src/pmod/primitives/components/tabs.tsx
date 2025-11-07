@@ -6,19 +6,25 @@ const TabsContainer = styled('div', {
 });
 
 const TabList = styled('div', {
-    display: 'flex', gap: 'var(--space-xs)', padding: 'var(--space-md)',
-    borderBottom: '1px solid rgba(255,255,255,0.06)'
+    display: 'flex', gap: 'var(--space-xs)',
+    background: 'var(--bg-soft)',
+    borderRadius: '9999px',
+    padding: 'var(--space-xs)',
+    margin: 'var(--space-md) var(--space-md) var(--space-xs) var(--space-md)'
 });
 
 const TabButton = styled('button', {
     padding: 'var(--space-xs) var(--space-md)', background: 'transparent',
-    border: 'none', borderRadius: 'var(--radius-soft)', cursor: 'pointer',
+    border: 'none', borderRadius: '9999px', cursor: 'pointer',
     fontSize: '13px', fontWeight: '500', color: 'var(--text-muted)',
-    transition: 'all 0.2s'
+    transition: 'all 0.2s',
+    flex: '1',
+    textAlign: 'center'
 });
 
 const TabPanel = styled('div', {
-    flex: '1', overflow: 'auto'
+    flex: '1', overflow: 'auto',
+    padding: '0 var(--space-md)'
 });
 
 interface Tab {
@@ -36,7 +42,7 @@ export function Tabs({ tabs }: { tabs: Tab[] }) {
                     <TabButton
                         onClick={() => activeTab.set(index)}
                         style={() => activeTab.get() === index 
-                            ? 'background: var(--bg-elev); color: var(--text-primary)'
+                            ? 'background: var(--bg-elev); color: var(--text-primary);'
                             : ''
                         }
                     >
