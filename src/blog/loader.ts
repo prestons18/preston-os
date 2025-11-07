@@ -47,7 +47,7 @@ tags:
 
 # Hello World
 
-`;
+This is a test blog post that uses **gray-matter** for frontmatter parsing.`;
 
 // Load all posts
 addPost("example-post", example_post);

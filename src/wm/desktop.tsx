@@ -99,7 +99,12 @@ export function Desktop() {
     isMobileView.set(isMobile.get());
   });
   
-  effect(() => () => cleanupResize());
+  effect(() => {
+    if (!isMobileView.get()) {
+      setTimeout(() => openApp('About'), 100);
+    }
+    return () => cleanupResize();
+  });
 
   const handleDockClick = (appName: string) => {
     const allWindows = wins.get();

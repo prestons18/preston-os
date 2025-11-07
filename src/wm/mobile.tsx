@@ -222,8 +222,9 @@ export function MobileOS() {
     setTimeout(() => activeApp.set(null), 300);
   };
   
-  effect(() => () => {
-    clearInterval(timeInterval);
+  effect(() => {
+    setTimeout(() => openApp('About'), 100);
+    return () => clearInterval(timeInterval);
   });
   
   return (
