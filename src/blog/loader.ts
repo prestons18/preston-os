@@ -36,6 +36,20 @@ PrestonOS is a modern, web-based operating system.
 
 Simply open any app from the dock to begin exploring!`;
 
+const hello_world = `---
+title: Hello World
+date: 2025-11-06
+description: A test blog post using gray-matter
+tags:
+  - test
+  - blog
+---
+
+# Hello World
+
+`;
+
 // Load all posts
 addPost("example-post", example_post);
 addPost("getting-started", getting_started);
+addPost("hello-world", hello_world);
