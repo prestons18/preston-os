@@ -16,6 +16,8 @@
     "typescript": "latest"
   },
   "dependencies": {
+    "buffer": "^6.0.3",
+    "gray-matter": "^4.0.3",
     "lucide": "^0.548.0",
     "marked": "^16.4.1"
   }

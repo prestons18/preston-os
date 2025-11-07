@@ -1,5 +1,6 @@
 import { readdir, readFile, writeFile } from 'fs/promises';
 import { join, basename } from 'path';
+import matter from 'gray-matter';
 
 async function generateBlogLoader() {
     const blogDir = 'src/blog';
@@ -24,6 +25,14 @@ async function generateBlogLoader() {
             const filePath = join(blogDir, file);
             
             const content = await readFile(filePath, 'utf-8');
+            
+            // Validate frontmatter with gray-matter
+            try {
+                matter(content);
+            } catch (error) {
+                console.error(`Error parsing frontmatter in ${file}:`, error.message);
+                continue;
+            }
             
             const escapedContent = content
                 .replace(/\\/g, '\\\\')

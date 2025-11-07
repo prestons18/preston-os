@@ -24,6 +24,21 @@ const PostDescription = styled('div', {
     marginTop: 'var(--space-sm)',
 });
 
+const TagsContainer = styled('div', {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: 'var(--space-xs)',
+    marginTop: 'var(--space-sm)',
+});
+
+const Tag = styled('span', {
+    fontSize: 'var(--text-xs)',
+    padding: '2px 8px',
+    borderRadius: 'var(--radius-sm)',
+    background: 'var(--bg-muted)',
+    color: 'var(--text-muted)',
+});
+
 defineApp({
     name: "Blog",
     icon: "BookOpen",
@@ -82,6 +97,15 @@ defineApp({
                                     <PostDate>{p.date}</PostDate>
                                     {p.description && (
                                         <PostDescription>{p.description}</PostDescription>
+                                    )}
+                                    
+                                    
+                                    {p.tags && p.tags.length > 0 && (
+                                        <TagsContainer>
+                                            {p.tags.map(tag => (
+                                                <Tag>{tag}</Tag>
+                                            ))}
+                                        </TagsContainer>
                                     )}
                                 </PostCard>
                             ))}
