@@ -54,7 +54,7 @@ const Location = styled('p', {
 const Section = styled('div', {
     padding: 'var(--space-lg)',
     paddingTop: 'var(--space-md)',
-    paddingBottom: 'var(--space-xl)'
+    paddingBottom: 'var(--space-lg)'
 });
 
 const SectionTitle = styled('h2', {
@@ -158,8 +158,16 @@ const AvailabilityText = styled('div', {
 const Divider = styled('div', {
     height: '1px',
     background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.08), transparent)',
-    margin: 'var(--space-lg) 0',
+    margin: 'var(--space-md) 0',
     opacity: '0.8'
+});
+
+const ExpMetaDot = styled('span', {
+    width: '4px',
+    height: '4px',
+    background: 'var(--text-muted)',
+    opacity: '0.5',
+    borderRadius: '50%'
 });
 
 
@@ -245,15 +253,15 @@ defineApp({
                         label: "Experience",
                         content: () => (
                             <Section>
-                                <VStack gap={32} style="padding-bottom: var(--space-lg);">
+                                <VStack gap={10} style="padding-bottom: var(--space-sm);">
                                     <div>
                                         <SectionTitle>Current Work</SectionTitle>
-                                        <VStack gap={12}>
+                                        <VStack gap={10}>
                                             <Experience>
                                                 <ExpTitle>Co-Founder & Hardware Engineer</ExpTitle>
                                                 <ExpMeta>
                                                     <span>GB Dynamics</span>
-                                                    <span style="width: 4px; height: 4px; background: var(--text-muted); opacity: 0.5; border-radius: 50%;"></span>
+                                                    <ExpMetaDot />
                                                     <span>Sep 2025 - Present</span>
                                                 </ExpMeta>
                                             </Experience>
@@ -261,7 +269,7 @@ defineApp({
                                                 <ExpTitle>Founder & Software Engineer</ExpTitle>
                                                 <ExpMeta>
                                                     <span>Arnold Development</span>
-                                                    <span style="width: 4px; height: 4px; background: var(--text-muted); opacity: 0.5; border-radius: 50%;"></span>
+                                                    <ExpMetaDot />
                                                     <span>Jul 2025 - Present</span>
                                                 </ExpMeta>
                                             </Experience>
@@ -272,12 +280,12 @@ defineApp({
 
                                     <div>
                                         <SectionTitle>Previous Experience</SectionTitle>
-                                        <VStack gap={12}>
+                                        <VStack gap={10}>
                                             <Experience>
                                                 <ExpTitle>Back-end Developer</ExpTitle>
                                                 <ExpMeta>
                                                     <span>RYPR</span>
-                                                    <span style="width: 4px; height: 4px; background: var(--text-muted); opacity: 0.5; border-radius: 50%;"></span>
+                                                    <ExpMetaDot />
                                                     <span>Nov 2023 - Mar 2024</span>
                                                 </ExpMeta>
                                             </Experience>
@@ -285,7 +293,7 @@ defineApp({
                                                 <ExpTitle>Lead Developer</ExpTitle>
                                                 <ExpMeta>
                                                     <span>Scale Your Shop</span>
-                                                    <span style="width: 4px; height: 4px; background: var(--text-muted); opacity: 0.5; border-radius: 50%;"></span>
+                                                    <ExpMetaDot />
                                                     <span>Sep 2023 - Nov 2023</span>
                                                 </ExpMeta>
                                             </Experience>
@@ -293,7 +301,7 @@ defineApp({
                                                 <ExpTitle>Server Administrator</ExpTitle>
                                                 <ExpMeta>
                                                     <span>Skyhawk Hosting</span>
-                                                    <span style="width: 4px; height: 4px; background: var(--text-muted); opacity: 0.5; border-radius: 50%;"></span>
+                                                    <ExpMetaDot />
                                                     <span>Jan 2021 - Mar 2021</span>
                                                 </ExpMeta>
                                             </Experience>
@@ -301,7 +309,7 @@ defineApp({
                                                 <ExpTitle>Co-Founder & Lead Developer</ExpTitle>
                                                 <ExpMeta>
                                                     <span>AstralNodes</span>
-                                                    <span style="width: 4px; height: 4px; background: var(--text-muted); opacity: 0.5; border-radius: 50%;"></span>
+                                                    <ExpMetaDot />
                                                     <span>May 2020 - Dec 2020</span>
                                                 </ExpMeta>
                                             </Experience>
