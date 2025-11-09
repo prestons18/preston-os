@@ -2,7 +2,10 @@ import { h, signal } from "fuse";
 import { styled } from "../../styled";
 
 const TabsContainer = styled('div', {
-    display: 'flex', flexDirection: 'column', height: '100%'
+    display: 'flex', 
+    flexDirection: 'column', 
+    height: '100%',
+    overflow: 'hidden' // Prevent container from scrolling, let TabPanel handle it
 });
 
 const TabList = styled('div', {
@@ -23,9 +26,33 @@ const TabButton = styled('button', {
 });
 
 const TabPanel = styled('div', {
-    flex: '1', overflow: 'auto',
-    padding: '0 var(--space-md)'
+    flex: '1', 
+    overflow: 'auto',
+    padding: '0 var(--space-md)',
+    scrollbarWidth: 'thin',
+    scrollbarColor: 'var(--bg-soft) transparent',
+    height: '100%',
+    display: 'block'
 });
+
+const scrollbarStyles = `
+    .tabs-panel::-webkit-scrollbar {
+        width: 8px;
+    }
+    .tabs-panel::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .tabs-panel::-webkit-scrollbar-thumb {
+        background: var(--bg-soft);
+        border-radius: 4px;
+    }
+`;
+// Not the best way to do this, but it works.
+if (typeof document !== 'undefined') {
+    const styleEl = document.createElement('style');
+    styleEl.textContent = scrollbarStyles;
+    document.head.appendChild(styleEl);
+}
 
 interface Tab {
     label: string;
@@ -50,8 +77,10 @@ export function Tabs({ tabs }: { tabs: Tab[] }) {
                     </TabButton>
                 ))}
             </TabList>
-            <TabPanel>
-                {() => tabs[activeTab.get()].content()}
+            <TabPanel class="tabs-panel">
+                <div style="min-height: 100%; padding-bottom: var(--space-lg);">
+                    {() => tabs[activeTab.get()].content()}
+                </div>
             </TabPanel>
         </TabsContainer>
     );
