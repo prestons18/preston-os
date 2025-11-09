@@ -45,6 +45,7 @@ type WindowState = {
 };
 
 const wins = signal<WindowState[]>([]);
+const hasOpenedInitialApp = signal(false);
 let highestZIndex = 100;
 const zIndexMap = new Map<string, ReturnType<typeof signal<number>>>();
 const minimisedMap = new Map<string, ReturnType<typeof signal<boolean>>>();
@@ -100,8 +101,11 @@ export function Desktop() {
   });
   
   effect(() => {
-    if (!isMobileView.get()) {
-      setTimeout(() => openApp('About'), 100);
+    if (!isMobileView.get() && !hasOpenedInitialApp.get()) {
+      setTimeout(() => {
+        openApp('About');
+        hasOpenedInitialApp.set(true);
+      }, 100);
     }
     return () => cleanupResize();
   });

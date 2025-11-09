@@ -205,6 +205,7 @@ export function MobileOS() {
   const activeApp = signal<string | null>(null);
   const appTransform = signal('translateX(0) translateZ(0)');
   const appOpacity = signal(1);
+  const hasOpenedInitialApp = signal(false);
   
   const timeInterval = setInterval(() => {
     currentTime.set(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
@@ -223,7 +224,12 @@ export function MobileOS() {
   };
   
   effect(() => {
-    setTimeout(() => openApp('About'), 100);
+    if (!hasOpenedInitialApp.get()) {
+      setTimeout(() => {
+        openApp('About');
+        hasOpenedInitialApp.set(true);
+      }, 100);
+    }
     return () => clearInterval(timeInterval);
   });
   
