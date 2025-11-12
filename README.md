@@ -1,6 +1,8 @@
 # PrestonOS
 My OS-style portfolio, built on [Fuse](https://github.com/prestons18/fuse), which is my framework!
 
+## Preview
+![Preview](https://prestonarnold.uk/public/demo.png)
 
 ## Features
 
