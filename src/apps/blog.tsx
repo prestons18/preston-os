@@ -2,7 +2,7 @@ import { h, signal } from "fuse";
 import { defineApp, styled, VStack, HStack, Button, Heading, Text, Icon } from "../pmod";
 import { api, BlogPost } from "../api";
 import { formatDate } from "../utils/date";
-import { openApp } from "../wm/desktop";
+import { openAppCrossPlatform } from "../utils/mobile";
 
 const PostCard = styled('div', {
     padding: 'var(--space-md)',
@@ -66,7 +66,8 @@ defineApp({
         fetchPosts();
 
         const viewPost = (post: BlogPost) => {
-            openApp('Browser', { url: `/blog/${post.slug}` });
+            const url = `/blog/${post.slug}`;
+            openAppCrossPlatform('Browser', { url });
         };
 
         return (
@@ -91,7 +92,16 @@ defineApp({
                     return (
                         <VStack gap={12}>
                             {postList.map(p => (
-                                <PostCard onClick={() => viewPost(p)}>
+                                <PostCard 
+                                    onClick={() => viewPost(p)}
+                                    onTouchStart={(e: TouchEvent) => {
+                                        e.stopPropagation();
+                                    }}
+                                    onTouchEnd={(e: TouchEvent) => {
+                                        e.preventDefault();
+                                        viewPost(p);
+                                    }}
+                                >
                                     <Heading style="font-size: var(--text-lg); margin: 0">
                                         {p.title}
                                     </Heading>

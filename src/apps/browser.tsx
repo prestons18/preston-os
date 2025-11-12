@@ -114,7 +114,8 @@ defineApp({
     height: 700,
     showInDock: false,
     content(props) {
-        const url = signal(props?.url || '');
+        const safeProps = props || {};
+        const url = signal(safeProps.url || '');
         const post = signal<BlogPost | null>(null);
         const content = signal('');
         const loading = signal(false);
@@ -142,7 +143,9 @@ defineApp({
             loading.set(false);
         };
         
-        if (props?.url) loadUrl(props.url);
+        if (safeProps.url) {
+            loadUrl(safeProps.url);
+        }
         
         return (
             <VStack gap={0} style="height: 100%">

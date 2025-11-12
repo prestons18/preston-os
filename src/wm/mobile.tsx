@@ -141,11 +141,12 @@ const BackButton = styled('button', {
 const apps = registry.list();
 const dockApps = ['About', 'Blog', 'Contact', 'Notes', 'Terminal'];
 
-function AppView({ appName, onClose, transform, opacity }: { 
+function AppView({ appName, onClose, transform, opacity, appProps }: { 
   appName: string; 
   onClose: () => void; 
   transform: () => string; 
   opacity: () => number;
+  appProps: () => any;
 }) {
   const app = registry.get(appName);
   if (!app) return null;
@@ -158,7 +159,12 @@ function AppView({ appName, onClose, transform, opacity }: {
           <span>{app.name}</span>
         </BackButton>
       </AppHeader>
-      <AppBody>{app.content()}</AppBody>
+      <AppBody>
+        {() => {
+          const props = appProps();
+          return app.content(props);
+        }}
+      </AppBody>
     </AppContent>
   );
 }
@@ -203,6 +209,7 @@ function HomeView({ onOpenApp }: { onOpenApp: (name: string) => void }) {
 export function MobileOS() {
   const currentTime = signal(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
   const activeApp = signal<string | null>(null);
+  const activeAppProps = signal<any>(null);
   const appTransform = signal('translateX(0) translateZ(0)');
   const appOpacity = signal(1);
   const hasOpenedInitialApp = signal(false);
@@ -211,11 +218,16 @@ export function MobileOS() {
     currentTime.set(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
   }, 60000);
   
-  const openApp = (name: string) => {
+  const openApp = (name: string, props?: any) => {
     activeApp.set(name);
+    activeAppProps.set(props);
     appTransform.set('translateX(0) translateZ(0)');
     appOpacity.set(1);
   };
+  
+  if (typeof window !== 'undefined') {
+    window.mobileOpenApp = openApp;
+  }
   
   const closeApp = () => {
     appTransform.set('translateX(100%) translateZ(0)');
@@ -258,7 +270,8 @@ export function MobileOS() {
             appName={current} 
             onClose={closeApp} 
             transform={() => appTransform.get()} 
-            opacity={() => appOpacity.get()} 
+            opacity={() => appOpacity.get()}
+            appProps={() => activeAppProps.get()}
           />
         );
       }}
