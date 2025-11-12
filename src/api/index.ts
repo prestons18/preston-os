@@ -1,5 +1,4 @@
 import { ApiRouter } from "fuse";
-import matter from "gray-matter";
 
 import { Buffer } from 'buffer';
 
@@ -26,8 +25,7 @@ export interface BlogPost {
 
 const posts: Record<string, BlogPost> = {};
 
-export function addPost(slug: string, raw: string) {
-  const { data, content } = matter(raw);
+export function addPost(slug: string, data: Record<string, any>, content: string) {
   posts[slug] = { slug, ...data, content } as BlogPost;
 }
 
