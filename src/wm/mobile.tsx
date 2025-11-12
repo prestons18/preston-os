@@ -139,7 +139,7 @@ const BackButton = styled('button', {
 });
 
 const apps = registry.list();
-const dockApps = ['About', 'Blog', 'Notes', 'Terminal'];
+const dockApps = ['About', 'Blog', 'Contact', 'Notes', 'Terminal'];
 
 function AppView({ appName, onClose, transform, opacity }: { 
   appName: string; 
