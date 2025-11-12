@@ -76,7 +76,8 @@ const Bio = styled('p', {
 const SkillGrid = styled('div', {
     display: 'grid',
     gridTemplateColumns: 'repeat(2, 1fr)',
-    gap: 'var(--space-sm)'
+    gap: 'var(--space-sm)',
+    marginTop: 'var(--space-sm)'
 });
 
 const Skill = styled('div', {
@@ -88,6 +89,12 @@ const Skill = styled('div', {
     border: '1px solid rgba(255,255,255,0.06)',
     fontWeight: '500',
     transition: 'all 0.2s ease',
+    textAlign: 'center',
+    wordBreak: 'break-word',
+    height: '40px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     ':hover': 'background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); transform: translateY(-1px);'
 });
 
@@ -193,9 +200,9 @@ defineApp({
                                     <Skill>Docker</Skill>
                                     <Skill>Embedded Systems</Skill>
                                     <Skill>Arduino / Microcontrollers</Skill>
-                                    <Skill>Autonomous Robotics</Skill>
                                     <Skill>Computer Vision</Skill>
-                                    <Skill>Machine Learning</Skill>
+                                    <Skill>AI / Machine Learning</Skill>
+                                    <Skill>GraphQL</Skill>
                                     <Skill>PostgreSQL</Skill>
                                     <Skill>Redis</Skill>
                                 </SkillGrid>
