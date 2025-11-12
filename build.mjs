@@ -1,11 +1,18 @@
 import { build, context } from "esbuild";
 import { spawn } from "child_process";
-import { promisify } from "util";
+import fs from "fs";
+import path from "path";
 
-const execAsync = promisify(spawn);
 const isWatchMode = process.argv.includes("--watch");
 
-// Generate blog loader before building
+async function prepareBuild() {
+    await fs.promises.copyFile("./index_prod.html", "./dist/index.html");
+
+    if (fs.existsSync("./public")) {
+        await fs.promises.cp("./public", "./dist/public", { recursive: true });
+    }
+}
+
 async function generateBlogLoader() {
     return new Promise((resolve, reject) => {
         const proc = spawn("node", ["scripts/generate-blog-loader.mjs"], {
@@ -38,7 +45,6 @@ const options = {
     }
 };
 
-// Generate blog loader first
 await generateBlogLoader();
 
 if (isWatchMode) {
@@ -47,10 +53,11 @@ if (isWatchMode) {
     await ctx.serve({
         servedir: ".",
         port: 3000,
-        fallback: "index.html"
+        fallback: "index_dev.html"
     });
     console.log("Dev server running at http://localhost:3000");
 } else {
     await build(options);
+    await prepareBuild();
     console.log("Build complete!");
 }
