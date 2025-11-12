@@ -2,8 +2,8 @@ import { h } from "fuse";
 import { defineApp, styled, VStack, Tabs, Icon } from "../pmod";
 
 const Header = styled('div', {
-    display: 'flex', 
-    gap: 'var(--space-lg)', 
+    display: 'flex',
+    gap: 'var(--space-lg)',
     alignItems: 'center',
     padding: 'var(--space-xl) var(--space-lg)',
     borderBottom: '1px solid rgba(255,255,255,0.08)',
@@ -11,8 +11,8 @@ const Header = styled('div', {
 });
 
 const Avatar = styled('div', {
-    width: '110px', 
-    height: '110px', 
+    width: '110px',
+    height: '110px',
     borderRadius: '16px',
     overflow: 'hidden',
     flexShrink: '0',
@@ -21,30 +21,30 @@ const Avatar = styled('div', {
 });
 
 const HeaderText = styled('div', {
-    display: 'flex', 
-    flexDirection: 'column', 
-    gap: '6px', 
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '6px',
     flex: '1'
 });
 
 const Name = styled('h1', {
-    fontSize: '22px', 
-    fontWeight: '700', 
-    color: 'var(--text-primary)', 
+    fontSize: '22px',
+    fontWeight: '700',
+    color: 'var(--text-primary)',
     margin: '0',
     letterSpacing: '-0.02em'
 });
 
 const Role = styled('p', {
-    fontSize: '14px', 
-    color: 'var(--text-secondary)', 
+    fontSize: '14px',
+    color: 'var(--text-secondary)',
     margin: '0',
     fontWeight: '500'
 });
 
 const Location = styled('p', {
-    fontSize: '12px', 
-    color: 'var(--text-muted)', 
+    fontSize: '12px',
+    color: 'var(--text-muted)',
     margin: '0',
     display: 'flex',
     alignItems: 'center',
@@ -58,32 +58,32 @@ const Section = styled('div', {
 });
 
 const SectionTitle = styled('h2', {
-    fontSize: '11px', 
-    fontWeight: '700', 
+    fontSize: '11px',
+    fontWeight: '700',
     color: 'var(--text-muted)',
-    textTransform: 'uppercase', 
-    letterSpacing: '0.8px', 
+    textTransform: 'uppercase',
+    letterSpacing: '0.8px',
     margin: '0 0 var(--space-md) 0'
 });
 
 const Bio = styled('p', {
-    fontSize: '14px', 
-    color: 'var(--text-secondary)', 
-    lineHeight: '1.7', 
+    fontSize: '14px',
+    color: 'var(--text-secondary)',
+    lineHeight: '1.7',
     margin: '0'
 });
 
 const SkillGrid = styled('div', {
-    display: 'grid', 
-    gridTemplateColumns: 'repeat(2, 1fr)', 
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
     gap: 'var(--space-sm)'
 });
 
 const Skill = styled('div', {
-    padding: 'var(--space-sm) var(--space-md)', 
+    padding: 'var(--space-sm) var(--space-md)',
     background: 'var(--bg-soft)',
-    borderRadius: 'var(--radius-md)', 
-    fontSize: '12px', 
+    borderRadius: 'var(--radius-md)',
+    fontSize: '12px',
     color: 'var(--text-secondary)',
     border: '1px solid rgba(255,255,255,0.06)',
     fontWeight: '500',
@@ -92,8 +92,8 @@ const Skill = styled('div', {
 });
 
 const Experience = styled('div', {
-    display: 'flex', 
-    flexDirection: 'column', 
+    display: 'flex',
+    flexDirection: 'column',
     gap: '6px',
     padding: 'var(--space-md)',
     borderRadius: 'var(--radius-md)',
@@ -103,14 +103,14 @@ const Experience = styled('div', {
 });
 
 const ExpTitle = styled('div', {
-    fontSize: '15px', 
-    fontWeight: '600', 
+    fontSize: '15px',
+    fontWeight: '600',
     color: 'var(--text-primary)',
     letterSpacing: '-0.01em'
 });
 
 const ExpMeta = styled('div', {
-    fontSize: '13px', 
+    fontSize: '13px',
     color: 'var(--text-muted)',
     fontWeight: '500',
     display: 'flex',
@@ -167,15 +167,15 @@ defineApp({
                         content: () => (
                             <Section>
                                 <Bio>
-                                   I have been focused on developing user-friendly and effective technologies for a long time. Ultimately, it's about creating solutions that help people get things done with the aid of online platforms or robotics.
+                                    I'm a self-taught developer and entrepreneur, home educated since 11, co-founded and managed AstralNodes whilst still in primary school (age 10).
                                 </Bio>
 
                                 <Bio style="margin-top: var(--space-md)">
-                                    Arnold Development is an area where I apply my digital skills to create websites and/or software to address specific problems. GB Dynamics specialises in modular automation technologies for SMEs.
+                                    Now I'm building robotics projects and online platforms/websites for companies, focusing on practical, scalable solutions.
                                 </Bio>
 
                                 <Bio style="margin-top: var(--space-md); margin-bottom: var(--space-lg);">
-                                    My views on automation were shaped by growing up in Northampton; as logistics and warehouse operations abound here. As such, the focus is always on providing solutions that are useful, accessible, and practical.
+                                    I'm open to collaboration, freelance work, or investment opportunities.
                                 </Bio>
                             </Section>
                         )
