@@ -1,6 +1,7 @@
 import { h, signal } from "fuse";
 import { defineApp, styled, VStack, HStack, Button, Heading, Text, Icon } from "../pmod";
 import { api, BlogPost } from "../api";
+import { formatDate } from "../utils/date";
 import { openApp } from "../wm/desktop";
 
 const PostCard = styled('div', {
@@ -94,7 +95,7 @@ defineApp({
                                     <Heading style="font-size: var(--text-lg); margin: 0">
                                         {p.title}
                                     </Heading>
-                                    <PostDate>{p.date}</PostDate>
+                                    <PostDate>{formatDate(p.date)}</PostDate>
                                     {p.description && (
                                         <PostDescription>{p.description}</PostDescription>
                                     )}

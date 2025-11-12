@@ -2,6 +2,7 @@ import { h, signal } from "fuse";
 import { defineApp, styled, VStack, Button, Icon, Text } from "../pmod";
 import { marked } from "marked";
 import { api, BlogPost } from "../api";
+import { formatLongDate } from "../utils/date";
 
 const BrowserHeader = styled('div', {
     padding: 'var(--space-sm) var(--space-md)',
@@ -165,7 +166,7 @@ defineApp({
                                 {p && (
                                     <PostMeta>
                                         <PostTitle>{p.title}</PostTitle>
-                                        <PostDate>{p.date}</PostDate>
+                                        <PostDate>{formatLongDate(p.date)}</PostDate>
                                         {p.tags && <div style="margin-top: var(--space-sm)">
                                             {p.tags.map(t => <Tag key={t}>{t}</Tag>)}
                                         </div>}
