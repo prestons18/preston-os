@@ -1,9 +1,9 @@
 import { build, context } from "esbuild";
 import { spawn } from "child_process";
 import fs from "fs";
-import path from "path";
 
 const isWatchMode = process.argv.includes("--watch");
+const isProd = process.env.NODE_ENV === "production" || process.argv.includes("--prod");
 
 async function prepareBuild() {
     await fs.promises.copyFile("./index_prod.html", "./dist/index.html");
@@ -34,11 +34,11 @@ const options = {
     outdir: "dist",
     format: "esm",
     target: ["esnext"],
-    sourcemap: true,
+    sourcemap: !isProd,
     jsxFactory: "h",
     jsxFragment: "null",
     platform: "browser",
-    minify: false,
+    minify: isProd,
     logLevel: "info",
     loader: {
         ".css": "css"
