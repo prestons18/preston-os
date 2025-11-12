@@ -6,6 +6,7 @@ import { AppWindow } from "./window";
 import { MobileOS } from "./mobile";
 import "../widgets/prsston";
 import { isMobile, addResizeListener } from "../utils/device";
+import { FuseBadge } from "../components/FuseBadge";
 
 const Dock = styled('div', {
   position: 'fixed',
@@ -179,6 +180,8 @@ export function Desktop() {
         })}
 
         {widgets.map((widget, idx) => widget.content({ x: window.innerWidth - 340, y: 20 + idx * 420 }))} 
+
+        <FuseBadge />
 
         <Dock>
           {apps.filter(app => app.showInDock !== false).map(app => {

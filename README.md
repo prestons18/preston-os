@@ -1,6 +1,7 @@
 # PrestonOS
 My OS-style portfolio, built on [Fuse](https://github.com/prestons18/fuse), which is my framework!
 
+
 ## Features
 
 ### PMOD
@@ -39,4 +40,4 @@ defineApp({
 ```
 It's purpose is so I can build modular and reactive apps for this portfolio without repeating myself and boilerplate.
 
-### Window Manager
+(README WIP)
