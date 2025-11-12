@@ -118,43 +118,6 @@ const ExpMeta = styled('div', {
     gap: '6px'
 });
 
-const AvailabilityCard = styled('div', {
-    padding: 'var(--space-md)',
-    background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05))',
-    border: '1px solid rgba(34, 197, 94, 0.25)',
-    borderRadius: 'var(--radius-lg)',
-    marginBottom: 'var(--space-lg)',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 'var(--space-sm)',
-    boxShadow: '0 4px 12px rgba(34, 197, 94, 0.08)'
-});
-
-const AvailabilityTitle = styled('div', {
-    fontSize: '14px',
-    fontWeight: '700',
-    color: 'rgb(34, 197, 94)',
-    display: 'flex',
-    alignItems: 'center',
-    gap: 'var(--space-sm)',
-    letterSpacing: '-0.01em'
-});
-
-const StatusDot = styled('div', {
-    width: '8px',
-    height: '8px',
-    borderRadius: '50%',
-    background: 'rgb(34, 197, 94)',
-    boxShadow: '0 0 8px rgba(34, 197, 94, 0.6)',
-    animation: 'pulse 2s ease-in-out infinite'
-});
-
-const AvailabilityText = styled('div', {
-    fontSize: '13px',
-    color: 'var(--text-secondary)',
-    lineHeight: '1.6'
-});
-
 const Divider = styled('div', {
     height: '1px',
     background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.08), transparent)',
@@ -203,16 +166,6 @@ defineApp({
                         label: "About",
                         content: () => (
                             <Section>
-                                <AvailabilityCard>
-                                    <AvailabilityTitle>
-                                        <StatusDot />
-                                        Open for New Projects
-                                    </AvailabilityTitle>
-                                    <AvailabilityText>
-                                        Arnold Development is currently accepting new client work and collaborations. Get in touch to discuss your project.
-                                    </AvailabilityText>
-                                </AvailabilityCard>
-
                                 <Bio>
                                    I have been focused on developing user-friendly and effective technologies for a long time. Ultimately, it's about creating solutions that help people get things done with the aid of online platforms or robotics.
                                 </Bio>
