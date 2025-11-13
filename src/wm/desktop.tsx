@@ -213,6 +213,7 @@ export function Desktop() {
               <DockIcon 
                 onClick={() => handleDockClick(app.name)} 
                 title={app.name}
+                aria-label={`${app.name} application${hasWindow() ? ', currently open' : ''}`}
                 style={() => `position: relative; ${hasWindow() ? 'background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.12);' : ''}`}
               >
                 {app.icon ? <Icon name={app.icon} size={28} /> : <Icon name="Package" size={28} />}

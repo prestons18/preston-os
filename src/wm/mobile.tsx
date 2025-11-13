@@ -155,7 +155,10 @@ function AppView({ appName, onClose, transform, opacity, appProps }: {
   return (
     <AppContent style={() => `transform: ${transform()}; opacity: ${opacity()};`}>
       <AppHeader>
-        <BackButton onClick={onClose}>
+        <BackButton 
+          onClick={onClose}
+          aria-label={`Return to home screen from ${app.name}`}
+        >
           <Icon name="ChevronLeft" size={18} />
           <span>{app.name}</span>
         </BackButton>
@@ -184,7 +187,10 @@ function HomeView({ onOpenApp }: { onOpenApp: (name: string) => void }) {
     <HomeContainer>
       <HomeScreen>
         {apps.map(app => (
-          <AppIcon onClick={() => onOpenApp(app.name)}>
+          <AppIcon 
+            onClick={() => onOpenApp(app.name)}
+            aria-label={`${app.name} application`}
+          >
             <AppIconBg>
               <Icon name={app.icon || "Package"} size={28} />
             </AppIconBg>
@@ -197,7 +203,10 @@ function HomeView({ onOpenApp }: { onOpenApp: (name: string) => void }) {
         {dockApps.map(name => {
           const app = registry.get(name);
           return app ? (
-            <DockIcon onClick={() => onOpenApp(name)}>
+            <DockIcon 
+              onClick={() => onOpenApp(name)}
+              aria-label={`${name} application`}
+            >
               <Icon name={app.icon || "Package"} size={24} />
             </DockIcon>
           ) : null;
@@ -258,11 +267,11 @@ export function MobileOS() {
   
   return (
     <MobileContainer>
-      <StatusBar>
-        <div>{currentTime}</div>
-        <div style="display: flex; gap: var(--space-xs)">
-          <Icon name="Wifi" size={14} />
-          <Icon name="Battery" size={14} />
+      <StatusBar role="status" aria-label="Status bar">
+        <div aria-label="Current time">{currentTime}</div>
+        <div style="display: flex; gap: var(--space-xs)" aria-label="Status indicators">
+          <Icon name="Wifi" size={14} aria-label="WiFi status" />
+          <Icon name="Battery" size={14} aria-label="Battery status" />
         </div>
       </StatusBar>
       
