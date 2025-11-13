@@ -53,27 +53,33 @@ const zIndexMap = new Map<string, ReturnType<typeof signal<number>>>();
 const minimisedMap = new Map<string, ReturnType<typeof signal<boolean>>>();
 
 export async function openApp(name: string, props?: any) {
-  if (appLoaders[name]) {
-    await appLoaders[name].ensureLoaded();
-  }
-  
-  const n = wins.get().length;
-  const id = `${name}-${Date.now()}`;
-  highestZIndex++;
-  
-  zIndexMap.set(id, signal(highestZIndex));
-  minimisedMap.set(id, signal(false));
+  try {
+    if (appLoaders[name]) {
+      await import('../utils/appRegistry').then(({ ensureAppLoaded }) => {
+        return ensureAppLoaded(name);
+      });
+    }
+    
+    const n = wins.get().length;
+    const id = `${name}-${Date.now()}`;
+    highestZIndex++;
+    
+    zIndexMap.set(id, signal(highestZIndex));
+    minimisedMap.set(id, signal(false));
 
-  wins.set([...wins.get(), {
-    key: id,
-    id: id,
-    app: name,
-    x: 100 + n * 30,
-    y: 80 + n * 30,
-    zIndex: highestZIndex,
-    minimised: false,
-    props
-  }]);
+    wins.set([...wins.get(), {
+      key: id,
+      id: id,
+      app: name,
+      x: 100 + n * 30,
+      y: 80 + n * 30,
+      zIndex: highestZIndex,
+      minimised: false,
+      props
+    }]);
+  } catch (err) {
+    console.error(`Failed to open app ${name}:`, err);
+  }
 }
 
 function bringToFront(id: string) {

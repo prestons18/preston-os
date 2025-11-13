@@ -222,7 +222,9 @@ export function MobileOS() {
   const openApp = async (name: string, props?: any) => {
     try {
       if (appLoaders[name]) {
-        await appLoaders[name].ensureLoaded();
+        await import('../utils/appRegistry').then(({ ensureAppLoaded }) => {
+          return ensureAppLoaded(name);
+        });
       }
       
       activeApp.set(name);
