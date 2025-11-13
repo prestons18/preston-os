@@ -388,7 +388,7 @@ export function AppWindow({ app, x, y, zIndex, minimised, props, onClose, onMini
                 </WindowActions>
             </Bar>
             <Content onMouseDown={onFocus} onTouchStart={onFocus}>{app.content(props)}</Content>
-            {() => !isMaximised.get() && <ResizeHandle onMouseDown={startResize} onTouchStart={startTouchResize} aria-label="Resize window" />}
+            {() => !isMaximised.get() && <ResizeHandle onMouseDown={startResize} onTouchStart={startTouchResize} aria-label="Resize window" role="button" />}
         </Win>
     );
 }
