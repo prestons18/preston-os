@@ -364,6 +364,7 @@ export function AppWindow({ app, x, y, zIndex, minimised, props, onClose, onMini
                             onClick={minimise} 
                             onMouseDown={(e: MouseEvent) => e.stopPropagation()}
                             onTouchStart={(e: TouchEvent) => e.stopPropagation()}
+                            aria-label="Minimise window"
                         >
                             <Icon name="Minus" size={16} aria-label="Minimise" />
                         </WindowButton>
@@ -372,6 +373,7 @@ export function AppWindow({ app, x, y, zIndex, minimised, props, onClose, onMini
                         onClick={toggleMaximise} 
                         onMouseDown={(e: MouseEvent) => e.stopPropagation()}
                         onTouchStart={(e: TouchEvent) => e.stopPropagation()}
+                        aria-label={() => isMaximised.get() ? "Restore window" : "Maximise window"}
                     >
                         {() => isMaximised.get() ? <Icon name="Minimize2" size={16} aria-label="Maximise" /> : <Icon name="Maximize2" size={16} aria-label="Maximise" />}
                     </WindowButton>
@@ -379,13 +381,14 @@ export function AppWindow({ app, x, y, zIndex, minimised, props, onClose, onMini
                         onClick={close} 
                         onMouseDown={(e: MouseEvent) => e.stopPropagation()}
                         onTouchStart={(e: TouchEvent) => e.stopPropagation()}
+                        aria-label="Close window"
                     >
                         <Icon name="X" size={16} aria-label="Close" />
                     </WindowButton>
                 </WindowActions>
             </Bar>
             <Content onMouseDown={onFocus} onTouchStart={onFocus}>{app.content(props)}</Content>
-            {() => !isMaximised.get() && <ResizeHandle onMouseDown={startResize} onTouchStart={startTouchResize} />}
+            {() => !isMaximised.get() && <ResizeHandle onMouseDown={startResize} onTouchStart={startTouchResize} aria-label="Resize window" />}
         </Win>
     );
 }
