@@ -20,9 +20,7 @@ const defaultAppConfigs: Record<string, AppConfig> = {
 };
 
 export const appLoaders: Record<string, ReturnType<typeof lazyLoad>> = {};
-
 const appContentFunctions = new Map<string, (props?: any) => any>();
-
 const loadingApps = new Set<string>();
 
 export function registerApp(
@@ -36,25 +34,13 @@ export function registerApp(
 
   const loader = lazyLoad(importFn);
   appLoaders[name] = loader;
-
   const appConfig = defaultAppConfigs[name] || {};
 
   registry.define({
     name,
     content: (props) => {
-      if (appContentFunctions.has(name)) {
-        return appContentFunctions.get(name)!(props);
-      }
-
-      if (loader.hasLoaded()) {
-        const appDef = registry.get(name);
-        if (appDef && typeof appDef.content === 'function' && appDef.content !== registry.get(name)?.content) {
-          appContentFunctions.set(name, appDef.content);
-          return appDef.content(props);
-        }
-      }
-
-      return h('div', null, '');
+      const cachedContent = appContentFunctions.get(name);
+      return cachedContent ? cachedContent(props) : h('div', null, '');
     },
     icon: appConfig.icon || "Package",
     showInDock: true
@@ -68,11 +54,7 @@ export function registerApp(
 }
 
 export async function ensureAppLoaded(name: string): Promise<void> {
-  if (appContentFunctions.has(name)) {
-    return;
-  }
-
-  if (loadingApps.has(name)) {
+  if (appContentFunctions.has(name) || loadingApps.has(name)) {
     return;
   }
 
@@ -82,20 +64,25 @@ export async function ensureAppLoaded(name: string): Promise<void> {
     return;
   }
 
+  loadingApps.add(name);
+
   try {
-    loadingApps.add(name);
-
     await loader.ensureLoaded();
-
+    
     const appDef = registry.get(name);
-    if (appDef && typeof appDef.content === 'function') {
-      appContentFunctions.set(name, appDef.content);
-
-      registry.define({
-        ...appDef,
-        content: (props) => appContentFunctions.get(name)!(props)
-      });
+    if (!appDef?.content || typeof appDef.content !== 'function') {
+      return;
     }
+
+    appContentFunctions.set(name, appDef.content);
+
+    registry.define({
+      ...appDef,
+      content: (props) => {
+        const fn = appContentFunctions.get(name);
+        return fn ? fn(props) : h('div', null, '');
+      }
+    });
   } catch (err) {
     console.error(`Failed to load app ${name}:`, err);
   } finally {

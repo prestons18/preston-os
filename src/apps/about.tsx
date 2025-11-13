@@ -155,7 +155,8 @@ defineApp({
                             src="/public/me.webp"
                             alt="Preston Arnold"
                             style="width: 100%; height: 100%; object-fit: cover;"
-                            loading="lazy"
+                            loading="eager"
+                            fetchpriority="high"
                             decoding="async"
                         />
                     </Avatar>
