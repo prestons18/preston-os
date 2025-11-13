@@ -22,7 +22,7 @@ export const WidgetHeader = styled('div', {
   borderBottom: '1px solid rgba(255, 255, 255, 0.06)'
 });
 
-export const WidgetTitle = styled('h3', {
+export const WidgetTitle = styled('h2', {
   fontSize: '14px',
   fontWeight: '600',
   color: 'var(--text-primary)',
