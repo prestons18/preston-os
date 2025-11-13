@@ -5,7 +5,7 @@ import { Icon } from "../pmod";
 import { AppWindow } from "./window";
 import { MobileOS } from "./mobile";
 import "../widgets/prsston";
-import { isMobile, addResizeListener } from "../utils/device";
+import { isMobile } from "../utils/device";
 import { FuseBadge } from "../components/FuseBadge";
 import { appLoaders } from "../utils/appRegistry";
 
@@ -108,10 +108,6 @@ export function Desktop() {
   const widgets = widgetRegistry.list();
   const isMobileView = signal(isMobile.get());
   
-  const cleanupResize = addResizeListener(() => {
-    isMobileView.set(isMobile.get());
-  });
-  
   effect(() => {
     if (!isMobileView.get() && !hasOpenedInitialApp.get()) {
       setTimeout(() => {
@@ -119,7 +115,7 @@ export function Desktop() {
         hasOpenedInitialApp.set(true);
       }, 100);
     }
-    return () => cleanupResize();
+    return () => {};
   });
 
   const handleDockClick = async (appName: string) => {

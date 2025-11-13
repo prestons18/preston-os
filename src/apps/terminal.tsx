@@ -1,6 +1,6 @@
 import { h, signal } from "fuse";
 import { defineApp, styled, listApps } from "../pmod";
-import { openAppCrossPlatform } from "../utils/mobile";
+import { createAppOpener } from "../utils/opener";
 
 const Container = styled('div', {
   display: 'flex',
@@ -47,6 +47,7 @@ defineApp({
   content() {
     const lines = signal<string[]>(['Type "help" for commands\n']);
     const input = signal("");
+    const appOpener = createAppOpener(window.mobileOpenApp);
 
     const commands: Record<string, (args: string[]) => string> = {
       help: () => 'Commands: help, clear, echo, date, ls, open',
@@ -65,8 +66,8 @@ defineApp({
         
         const app = listApps().find(app => app.name.toLowerCase() === appName.toLowerCase());
         if (app) {
-          openAppCrossPlatform(app.name, args.length > 1 ? { args: args.slice(1) } : undefined);
-          return `Opening ${app.name}...`;
+          appOpener.open(app.name, args.length > 1 ? { args: args.slice(1) } : undefined);
+          return `Opening "${app.name.toLowerCase()}"`;
         }
         
         return `Failed to open app: ${appName.toLowerCase()}`;

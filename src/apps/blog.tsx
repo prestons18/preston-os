@@ -2,8 +2,8 @@ import { h, signal } from "fuse";
 import { defineApp, styled, VStack, HStack, Button, Heading, Text, Icon } from "../pmod";
 import { BlogPost } from "../controllers/blog";
 import { formatDate } from "../utils/date";
-import { openAppCrossPlatform } from "../utils/mobile";
 import { api } from "../router/api";
+import { createAppOpener } from "../utils/opener";
 
 const PostCard = styled('div', {
     padding: 'var(--space-md)',
@@ -58,6 +58,7 @@ defineApp({
     content() {
         const posts = signal<BlogPost[]>([]);
         const loading = signal(true);
+        const appOpener = createAppOpener(window.mobileOpenApp);
 
         // Fetch posts from API
         const fetchPosts = () => {
@@ -76,7 +77,7 @@ defineApp({
 
         const viewPost = (post: BlogPost) => {
             const url = `/blog/${post.slug}`;
-            openAppCrossPlatform('Browser', { url });
+            appOpener.open('Browser', { url });
         };
 
         return (
