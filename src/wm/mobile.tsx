@@ -2,6 +2,7 @@ import { h, signal, effect } from "fuse";
 import { styled } from "../pmod/styled";
 import { registry } from "../pmod/registry";
 import { Icon } from "../pmod";
+import { appLoaders } from "../utils/appRegistry";
 
 const MobileContainer = styled('div', {
   width: '100vw',
@@ -218,11 +219,19 @@ export function MobileOS() {
     currentTime.set(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
   }, 60000);
   
-  const openApp = (name: string, props?: any) => {
-    activeApp.set(name);
-    activeAppProps.set(props);
-    appTransform.set('translateX(0) translateZ(0)');
-    appOpacity.set(1);
+  const openApp = async (name: string, props?: any) => {
+    try {
+      if (appLoaders[name]) {
+        await appLoaders[name].ensureLoaded();
+      }
+      
+      activeApp.set(name);
+      activeAppProps.set(props);
+      appTransform.set('translateX(0) translateZ(0)');
+      appOpacity.set(1);
+    } catch (err) {
+      console.error(`Failed to open app ${name}:`, err);
+    }
   };
   
   if (typeof window !== 'undefined') {

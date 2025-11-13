@@ -1,10 +1,10 @@
 import { Children } from "fuse";
-import { icons } from "lucide";
+import { IconName } from "../utils/icons";
 
 export interface PmodApp {
     name: string;
     content: (props?: any) => Children;
-    icon?: keyof typeof icons;
+    icon?: IconName;
     width?: number;
     height?: number;
     showInDock?: boolean;
@@ -13,7 +13,7 @@ export interface PmodApp {
 export interface PmodWidget {
     name: string;
     content: (props: { x: number; y: number }) => Children;
-    icon?: keyof typeof icons;
+    icon?: IconName;
     defaultWidth?: number;
     defaultHeight?: number;
     refreshInterval?: number;
@@ -24,7 +24,7 @@ export class AppRegistry {
 
     define(app: PmodApp) {
         if (this.apps[app.name]) {
-            console.warn(`App ${app.name} is already defined.`);
+            Object.assign(this.apps[app.name], app);
             return;
         }
         this.apps[app.name] = app;
@@ -44,7 +44,7 @@ export class WidgetRegistry {
 
     define(widget: PmodWidget) {
         if (this.widgets[widget.name]) {
-            console.warn(`Widget ${widget.name} is already defined.`);
+            Object.assign(this.widgets[widget.name], widget);
             return;
         }
         this.widgets[widget.name] = widget;

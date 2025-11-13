@@ -1,8 +1,8 @@
 import { h } from "fuse";
-import { icons } from "lucide";
+import { icons, IconName } from "../../../utils/icons";
 
 interface IconProps {
-  name: keyof typeof icons;
+  name: IconName;
   size?: number | (() => number);
   color?: string | (() => string);
   strokeWidth?: number | (() => number);

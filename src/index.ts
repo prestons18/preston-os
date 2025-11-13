@@ -1,12 +1,14 @@
 import { render } from "fuse";
 import { Desktop } from "./wm/desktop";
+import { registerApp } from "./utils/appRegistry";
 
 import "./blog/loader";
-import "./apps/about";
-import "./apps/blog";
-import "./apps/browser";
-import "./apps/contact";
-import "./apps/terminal";
+
+registerApp("About", () => import("./apps/about"), true);
+registerApp("Blog", () => import("./apps/blog"));
+registerApp("Browser", () => import("./apps/browser"));
+registerApp("Contact", () => import("./apps/contact"));
+registerApp("Terminal", () => import("./apps/terminal"));
 
 const root = document.getElementById("root");
 if (!root) throw new Error("Root element not found");

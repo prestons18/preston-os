@@ -62,7 +62,6 @@ defineApp({
             loading.set(false);
         };
 
-        // Initial fetch
         fetchPosts();
 
         const viewPost = (post: BlogPost) => {

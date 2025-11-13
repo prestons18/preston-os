@@ -1,6 +1,6 @@
 import { h } from "fuse";
 import { defineApp, styled, VStack, Heading, Text, Icon } from "../pmod";
-import type { icons } from "lucide";
+import { IconName } from "../utils/icons";
 
 const Card = styled('div', {
   display: 'flex',
@@ -37,7 +37,7 @@ defineApp({
       phone: "+44 7788 592563" 
     };
     
-    const socials: Array<{ name: string; icon: keyof typeof icons; url: string }> = [
+    const socials: Array<{ name: string; icon: IconName; url: string }> = [
       { name: "LinkedIn", icon: "Linkedin", url: "https://linkedin.com/in/prestonarnold9" },
       { name: "Twitter", icon: "Twitter", url: "https://x.com/prestonarnolds" },
       { name: "GitHub", icon: "Github", url: "https://github.com/prestons18" },

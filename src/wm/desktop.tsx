@@ -7,6 +7,7 @@ import { MobileOS } from "./mobile";
 import "../widgets/prsston";
 import { isMobile, addResizeListener } from "../utils/device";
 import { FuseBadge } from "../components/FuseBadge";
+import { appLoaders } from "../utils/appRegistry";
 
 const Dock = styled('div', {
   position: 'fixed',
@@ -51,7 +52,11 @@ let highestZIndex = 100;
 const zIndexMap = new Map<string, ReturnType<typeof signal<number>>>();
 const minimisedMap = new Map<string, ReturnType<typeof signal<boolean>>>();
 
-export function openApp(name: string, props?: any) {
+export async function openApp(name: string, props?: any) {
+  if (appLoaders[name]) {
+    await appLoaders[name].ensureLoaded();
+  }
+  
   const n = wins.get().length;
   const id = `${name}-${Date.now()}`;
   highestZIndex++;
@@ -111,7 +116,7 @@ export function Desktop() {
     return () => cleanupResize();
   });
 
-  const handleDockClick = (appName: string) => {
+  const handleDockClick = async (appName: string) => {
     const allWindows = wins.get();
     const existingWindows = allWindows.filter(w => w.app === appName);
     
@@ -138,7 +143,11 @@ export function Desktop() {
         }
       }
     } else {
-      openApp(appName);
+      try {
+        await openApp(appName);
+      } catch (err) {
+        console.error(`Failed to open app ${appName}:`, err);
+      }
     }
   };
 

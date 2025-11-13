@@ -39,6 +39,8 @@ const options = {
     jsxFragment: "null",
     platform: "browser",
     minify: isProd,
+    splitting: true,
+    chunkNames: "chunks/[name]-[hash]",
     logLevel: "info",
     loader: {
         ".css": "css"
