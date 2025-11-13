@@ -1,8 +1,9 @@
 import { h, signal } from "fuse";
 import { defineApp, styled, VStack, HStack, Button, Heading, Text, Icon } from "../pmod";
-import { api, BlogPost } from "../api";
+import { BlogPost } from "../controllers/blog";
 import { formatDate } from "../utils/date";
 import { openAppCrossPlatform } from "../utils/mobile";
+import { api } from "../router/api";
 
 const PostCard = styled('div', {
     padding: 'var(--space-md)',

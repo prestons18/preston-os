@@ -1,7 +1,8 @@
 import { h, signal } from "fuse";
 import { defineWidget, Widget, WidgetHeader, WidgetTitle, WidgetContent, WidgetItem, WidgetItemTitle, WidgetItemMeta, WidgetAction, Icon, WidgetBadge } from "../pmod";
-import { api, BlogPost } from "../api";
+import { BlogPost } from "../controllers/blog";
 import { openApp } from "../wm/desktop";
+import { api } from "../router/api";
 
 defineWidget({
   name: "prsston",

@@ -1,7 +1,3 @@
-import { ApiRouter } from "fuse";
-
-const api = new ApiRouter();
-
 export interface BlogPost {
   slug: string;
   title: string;
@@ -12,13 +8,8 @@ export interface BlogPost {
   readingTime?: number;
 }
 
-const posts: Record<string, BlogPost> = {};
+export const posts: Record<string, BlogPost> = {};
 
 export function addPost(slug: string, data: Record<string, any>, content: string) {
   posts[slug] = { slug, ...data, content } as BlogPost;
 }
-
-api.get('/api/posts', () => Object.values(posts));
-api.get('/api/posts/:slug', (params) => posts[params.slug] || null);
-
-export { api };

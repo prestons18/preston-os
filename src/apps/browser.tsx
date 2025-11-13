@@ -1,8 +1,9 @@
 import { h, signal } from "fuse";
 import { defineApp, styled, VStack, Button, Icon, Text } from "../pmod";
 import { marked } from "marked";
-import { api, BlogPost } from "../api";
+import { BlogPost } from "../controllers/blog";
 import { formatLongDate } from "../utils/date";
+import { api } from "../router/api";
 
 const BrowserHeader = styled('div', {
     padding: 'var(--space-sm) var(--space-md)',
