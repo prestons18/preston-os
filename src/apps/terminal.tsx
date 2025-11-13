@@ -1,5 +1,6 @@
 import { h, signal } from "fuse";
-import { defineApp, styled } from "../pmod";
+import { defineApp, styled, listApps } from "../pmod";
+import { openAppCrossPlatform } from "../utils/mobile";
 
 const Container = styled('div', {
   display: 'flex',
@@ -48,7 +49,28 @@ defineApp({
     const input = signal("");
 
     const commands: Record<string, (args: string[]) => string> = {
-      help: () => 'Commands: help, clear, echo, date, ls',
+      help: () => 'Commands: help, clear, echo, date, ls, open',
+      open: (args) => {
+        if (args.length === 0) {
+          const apps = listApps().filter(app => app.showInDock !== false).map(app => app.name.toLowerCase());
+          return `Usage: open [app_name]\n\nAvailable apps:\n${apps.join('\n')}`;
+        }
+        
+        const appName = args[0];
+        const appExists = listApps().some(app => app.name.toLowerCase() === appName.toLowerCase());
+        
+        if (!appExists) {
+          return `App not found: ${appName.toLowerCase()}`;
+        }
+        
+        const app = listApps().find(app => app.name.toLowerCase() === appName.toLowerCase());
+        if (app) {
+          openAppCrossPlatform(app.name, args.length > 1 ? { args: args.slice(1) } : undefined);
+          return `Opening ${app.name}...`;
+        }
+        
+        return `Failed to open app: ${appName.toLowerCase()}`;
+      },
       clear: () => { lines.set([]); return ''; },
       echo: (args) => args.join(' '),
       date: () => new Date().toString(),
