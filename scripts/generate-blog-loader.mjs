@@ -9,16 +9,13 @@ async function generateBlogLoader() {
   try {
     const files = await readdir(BLOG_DIR);
     const mdxFiles = files.filter(file => file.endsWith('.mdx'));
-
+    
     if (mdxFiles.length === 0) {
       console.log('No MDX files found in blog directory');
       return;
     }
 
-    const posts = await Promise.all(
-      mdxFiles.map(file => parsePost(file))
-    );
-
+    const posts = await Promise.all(mdxFiles.map(parsePost));
     const validPosts = posts.filter(Boolean);
     
     if (validPosts.length === 0) {
@@ -28,7 +25,6 @@ async function generateBlogLoader() {
 
     const loaderContent = buildLoaderFile(validPosts);
     await writeFile(OUTPUT_FILE, loaderContent, 'utf-8');
-    
     console.log(`✓ Generated blog loader with ${validPosts.length} post(s)`);
   } catch (error) {
     console.error('Error generating blog loader:', error);
@@ -36,18 +32,26 @@ async function generateBlogLoader() {
   }
 }
 
+function calculateReadingTime(text) {
+  const wordsPerMinute = 225;
+  const wordCount = text.trim().split(/\s+/).length;
+  const readingTime = Math.ceil(wordCount / wordsPerMinute);
+  return Math.max(1, readingTime);
+}
+
 async function parsePost(filename) {
   const slug = parse(filename).name;
   const filePath = join(BLOG_DIR, filename);
-
+  
   try {
     const content = await readFile(filePath, 'utf-8');
     const { data, content: markdown } = matter(content);
+    const readingTime = calculateReadingTime(markdown);
     
     return {
       slug,
       varName: createValidIdentifier(slug),
-      frontmatter: data,
+      frontmatter: { ...data, readingTime },
       content: markdown
     };
   } catch (error) {
@@ -57,13 +61,11 @@ async function parsePost(filename) {
 }
 
 function createValidIdentifier(slug) {
-  // Convert slug to valid JS identifier
   let identifier = slug
     .split('')
     .map(char => /[a-zA-Z0-9]/.test(char) ? char : '_')
     .join('');
   
-  // Ensure it starts with a letter or underscore
   if (/^[0-9]/.test(identifier)) {
     identifier = '_' + identifier;
   }
@@ -76,11 +78,11 @@ function buildLoaderFile(posts) {
     `const ${post.varName}_content = ${JSON.stringify(post.content)};`,
     `const ${post.varName}_data = ${JSON.stringify(post.frontmatter)};`
   ]);
-
+  
   const addPostCalls = posts.map(post => 
     `addPost(${JSON.stringify(post.slug)}, ${post.varName}_data, ${post.varName}_content);`
   );
-
+  
   return `import { addPost } from "../api";
 
 // Auto-generated blog post loader
@@ -89,7 +91,6 @@ function buildLoaderFile(posts) {
 
 ${imports.join('\n')}
 
-// Load all posts
 ${addPostCalls.join('\n')}
 `;
 }

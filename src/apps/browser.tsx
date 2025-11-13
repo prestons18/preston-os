@@ -47,6 +47,15 @@ const PostTitle = styled('h1', {
 const PostDate = styled('div', {
     fontSize: 'var(--text-sm)',
     color: 'var(--text-muted)',
+    display: 'flex',
+    gap: 'var(--space-sm)',
+    alignItems: 'center',
+});
+
+const ReadingTime = styled('span', {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '4px',
 });
 
 const PostDescription = styled('div', {
@@ -169,7 +178,17 @@ defineApp({
                                 {p && (
                                     <PostMeta>
                                         <PostTitle>{p.title}</PostTitle>
-                                        <PostDate>{formatLongDate(p.date)}</PostDate>
+                                        <PostDate>
+                                            {formatLongDate(p.date)}
+                                            {p.readingTime && (
+                                                <>
+                                                    <span>-</span>
+                                                    <ReadingTime>
+                                                        {p.readingTime} min read
+                                                    </ReadingTime>
+                                                </>
+                                            )}
+                                        </PostDate>
                                         {p.tags && <div style="margin-top: var(--space-sm)">
                                             {p.tags.map(t => <Tag key={t}>{t}</Tag>)}
                                         </div>}

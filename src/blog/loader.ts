@@ -5,7 +5,6 @@ import { addPost } from "../api";
 // Do not edit manually - your changes will be overwritten
 
 const hello_world_content = "\nHello there!  \n\nI'm excited to introduce you to **PrestonOS**, my personal corner of the web.\n\nAfter working on a variety of personal projects, including open source libraries and my OS-style portfolio, I realised I wanted a space to document things I'm working on or thinking about.\n\nThis website uses the [Fuse JSX framework](https://github.com/prestons18/fuse), which I built from scratch. It uses a custom page router, fine-grained reactivity and signals, everything that I love about building web apps in TypeScript.\n\nIf you're curious, feel free to explore the code, poke around, or reach out, I'd love to hear what you think. And of course, stay tuned for more posts, projects, and experiments coming soon!";
-const hello_world_data = {"title":"Hello, World! Welcome to PrestonOS","date":"2025-11-12T00:00:00.000Z","description":"My corner of the web where I share thoughts, projects, and what inspires me."};
+const hello_world_data = {"title":"Hello, World! Welcome to PrestonOS","date":"2025-11-12T00:00:00.000Z","description":"My corner of the web where I share thoughts, projects, and what inspires me.","readingTime":1};
 
-// Load all posts
 addPost("hello_world", hello_world_data, hello_world_content);

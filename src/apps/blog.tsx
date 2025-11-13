@@ -17,6 +17,15 @@ const PostDate = styled('div', {
     fontSize: 'var(--text-sm)',
     color: 'var(--text-muted)',
     marginTop: 'var(--space-xs)',
+    display: 'flex',
+    gap: 'var(--space-sm)',
+    alignItems: 'center',
+});
+
+const ReadingTime = styled('span', {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '4px',
 });
 
 const PostDescription = styled('div', {
@@ -104,7 +113,17 @@ defineApp({
                                     <Heading style="font-size: var(--text-lg); margin: 0">
                                         {p.title}
                                     </Heading>
-                                    <PostDate>{formatDate(p.date)}</PostDate>
+                                    <PostDate>
+                                        {formatDate(p.date)}
+                                        {p.readingTime && (
+                                            <>
+                                                <span>-</span>
+                                                <ReadingTime>
+                                                    {p.readingTime} min read
+                                                </ReadingTime>
+                                            </>
+                                        )}
+                                    </PostDate>
                                     {p.description && (
                                         <PostDescription>{p.description}</PostDescription>
                                     )}

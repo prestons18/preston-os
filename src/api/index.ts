@@ -21,6 +21,7 @@ export interface BlogPost {
   description?: string;
   content: string;
   tags?: string[];
+  readingTime?: number;
 }
 
 const posts: Record<string, BlogPost> = {};
