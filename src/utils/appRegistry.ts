@@ -26,7 +26,8 @@ const loadingApps = new Set<string>();
 export function registerApp(
   name: string, 
   importFn: () => Promise<any>, 
-  preload = false
+  preload = false,
+  showInDock = true
 ) {
   if (appLoaders[name]) {
     return appLoaders[name];
@@ -43,7 +44,7 @@ export function registerApp(
       return cachedContent ? cachedContent(props) : h('div', null, '');
     },
     icon: appConfig.icon || "Package",
-    showInDock: true
+    showInDock
   });
 
   if (preload) {
