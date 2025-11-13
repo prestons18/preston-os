@@ -1,4 +1,4 @@
-import { h, signal } from "fuse";
+import { h, signal } from "@prestonarnold/fuse";
 import { defineWidget, Widget, WidgetHeader, WidgetTitle, WidgetContent, WidgetItem, WidgetItemTitle, WidgetItemMeta, WidgetAction, Icon, WidgetBadge } from "../pmod";
 import { BlogPost } from "../controllers/blog";
 import { openApp } from "../wm/desktop";

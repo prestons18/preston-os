@@ -1,4 +1,4 @@
-import { h, signal, onCleanup, effect } from "fuse";
+import { h, signal, onCleanup, effect } from "@prestonarnold/fuse";
 import { PmodApp } from "../pmod/registry";
 import { styled, spring, Icon } from "../pmod";
 

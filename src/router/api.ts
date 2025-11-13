@@ -1,4 +1,4 @@
-import { ApiRouter } from "fuse";
+import { ApiRouter } from "@prestonarnold/fuse";
 import { posts } from "../controllers/blog";
 
 const api = new ApiRouter();

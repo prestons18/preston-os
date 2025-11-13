@@ -1,4 +1,4 @@
-import { signal } from "fuse";
+import { signal } from "@prestonarnold/fuse";
 
 export function lazyLoad<T>(importFn: () => Promise<T>) {
   const module = signal<T | null>(null);

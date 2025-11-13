@@ -1,4 +1,4 @@
-import { h, signal } from "fuse";
+import { h, signal } from "@prestonarnold/fuse";
 import { defineApp, styled, listApps } from "../pmod";
 import { createAppOpener } from "../utils/opener";
 

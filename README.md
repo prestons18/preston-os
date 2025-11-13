@@ -11,7 +11,7 @@ PMOD is a light, declarative framework which uses Fuse to let you define apps an
 
 Here's an example:
 ```tsx
-import { h, signal } from "fuse";
+import { h, signal } from "@prestonarnold/fuse";
 import { defineApp } from "../pmod";
 import { Button } from "../pmod/primitives/button";
 import { VStack } from "../pmod/primitives/vstack";

@@ -1,4 +1,4 @@
-import { render } from "fuse";
+import { render } from "@prestonarnold/fuse";
 import { Desktop } from "./wm/desktop";
 import { registerApp } from "./utils/appRegistry";
 

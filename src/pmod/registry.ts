@@ -1,4 +1,4 @@
-import { Children } from "fuse";
+import { Children } from "@prestonarnold/fuse";
 import { IconName } from "../utils/icons";
 
 export interface PmodApp {

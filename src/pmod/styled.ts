@@ -1,4 +1,4 @@
-import { h } from "fuse";
+import { h } from "@prestonarnold/fuse";
 
 type StyleObj = Record<string, string | number>;
 type Variants<T extends string> = Record<T, StyleObj>;

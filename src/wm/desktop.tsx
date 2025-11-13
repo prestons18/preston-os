@@ -1,4 +1,4 @@
-import { h, signal, For, effect } from "fuse";
+import { h, signal, For, effect } from "@prestonarnold/fuse";
 import { styled } from "../pmod/styled";
 import { registry, widgetRegistry } from "../pmod/registry";
 import { Icon } from "../pmod";

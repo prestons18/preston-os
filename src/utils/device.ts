@@ -1,4 +1,4 @@
-import { signal } from "fuse";
+import { signal } from "@prestonarnold/fuse";
 
 // Platform detection
 export const isMobile = signal(window.innerWidth < 768);

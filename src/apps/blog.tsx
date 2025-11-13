@@ -1,4 +1,4 @@
-import { h, signal } from "fuse";
+import { h, signal } from "@prestonarnold/fuse";
 import { defineApp, styled, VStack, HStack, Button, Heading, Text, Icon } from "../pmod";
 import { BlogPost } from "../controllers/blog";
 import { formatDate } from "../utils/date";

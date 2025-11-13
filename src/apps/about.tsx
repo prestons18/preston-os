@@ -1,4 +1,4 @@
-import { h } from "fuse";
+import { h } from "@prestonarnold/fuse";
 import { defineApp, styled, VStack, Tabs, Icon } from "../pmod";
 
 const Header = styled('div', {

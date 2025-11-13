@@ -1,4 +1,4 @@
-import { h } from "fuse";
+import { h } from "@prestonarnold/fuse";
 import { defineApp, styled, VStack, Heading, Text, Icon } from "../pmod";
 import { IconName } from "../utils/icons";
 

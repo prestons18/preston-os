@@ -1,4 +1,4 @@
-import { Children, h } from "fuse";
+import { Children, h } from "@prestonarnold/fuse";
 
 interface VStackProps {
   children?: Children;

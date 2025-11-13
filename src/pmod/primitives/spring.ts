@@ -1,4 +1,4 @@
-import { signal } from "fuse";
+import { signal } from "@prestonarnold/fuse";
 
 export function spring(initial: any, stiffness = 300, damping = 50) {
   const val = signal(initial);

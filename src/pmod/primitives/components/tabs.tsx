@@ -1,4 +1,4 @@
-import { h, signal } from "fuse";
+import { h, signal } from "@prestonarnold/fuse";
 import { styled } from "../../styled";
 
 const TabsContainer = styled('div', {

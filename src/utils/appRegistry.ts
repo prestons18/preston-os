@@ -1,4 +1,4 @@
-import { h } from "fuse";
+import { h } from "@prestonarnold/fuse";
 import { lazyLoad } from "./lazyLoad";
 import { registry } from "../pmod/registry";
 import { IconName } from "../utils/icons";

@@ -1,4 +1,4 @@
-import { h } from "fuse";
+import { h } from "@prestonarnold/fuse";
 import { styled } from "../pmod/styled";
 
 const BadgeContainer = styled('a', {

@@ -1,4 +1,4 @@
-import { h } from "fuse";
+import { h } from "@prestonarnold/fuse";
 import { icons, IconName } from "../../../utils/icons";
 
 interface IconProps {

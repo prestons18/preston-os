@@ -17,6 +17,7 @@
     "typescript": "latest"
   },
   "dependencies": {
+    "@prestonarnold/fuse": "^0.1.0",
     "gray-matter": "^4.0.3",
     "lucide": "^0.548.0",
     "marked": "^16.4.1"
