@@ -152,10 +152,11 @@ defineApp({
                 <Header>
                     <Avatar>
                         <img
-                            src="/public/me.jpg"
+                            src="/public/me.webp"
                             alt="Preston Arnold"
                             style="width: 100%; height: 100%; object-fit: cover;"
-                            loading="eager"
+                            loading="lazy"
+                            decoding="async"
                         />
                     </Avatar>
                     <HeaderText>
