@@ -356,7 +356,7 @@ export function AppWindow({ app, x, y, zIndex, minimised, props, onClose, onMini
             onTouchStart={onFocus}
         >
             <Bar onMouseDown={startDrag} onTouchStart={startTouchDrag} onDblClick={toggleMaximise} style={() => isMaximised.get() ? "cursor:default" : "cursor:move"}>
-                {app.icon ? <Icon name={app.icon} size={18} /> : <Icon name="Package" size={18} />}
+                {app.icon ? <Icon name={app.icon} size={18} aria-label={app.name} /> : <Icon name="Package" size={18} aria-label="Package" />}
                 <span>{app.name}</span>
                 <WindowActions>
                     {onMinimise && (
@@ -365,7 +365,7 @@ export function AppWindow({ app, x, y, zIndex, minimised, props, onClose, onMini
                             onMouseDown={(e: MouseEvent) => e.stopPropagation()}
                             onTouchStart={(e: TouchEvent) => e.stopPropagation()}
                         >
-                            <Icon name="Minus" size={16} />
+                            <Icon name="Minus" size={16} aria-label="Minimise" />
                         </WindowButton>
                     )}
                     <WindowButton 
@@ -373,14 +373,14 @@ export function AppWindow({ app, x, y, zIndex, minimised, props, onClose, onMini
                         onMouseDown={(e: MouseEvent) => e.stopPropagation()}
                         onTouchStart={(e: TouchEvent) => e.stopPropagation()}
                     >
-                        {() => isMaximised.get() ? <Icon name="Minimize2" size={16} /> : <Icon name="Maximize2" size={16} />}
+                        {() => isMaximised.get() ? <Icon name="Minimize2" size={16} aria-label="Maximise" /> : <Icon name="Maximize2" size={16} aria-label="Maximise" />}
                     </WindowButton>
                     <WindowButton 
                         onClick={close} 
                         onMouseDown={(e: MouseEvent) => e.stopPropagation()}
                         onTouchStart={(e: TouchEvent) => e.stopPropagation()}
                     >
-                        <Icon name="X" size={16} />
+                        <Icon name="X" size={16} aria-label="Close" />
                     </WindowButton>
                 </WindowActions>
             </Bar>
