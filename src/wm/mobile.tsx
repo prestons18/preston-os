@@ -268,8 +268,8 @@ export function MobileOS() {
   return (
     <MobileContainer>
       <StatusBar role="status" aria-label="Status bar">
-        <div aria-label="Current time">{currentTime}</div>
-        <div style="display: flex; gap: var(--space-xs)" aria-label="Status indicators">
+        <time role="timer" aria-label="Current time">{currentTime}</time>
+        <div style="display: flex; gap: var(--space-xs)" role="group" aria-label="Status indicators">
           <Icon name="Wifi" size={14} aria-label="WiFi status" />
           <Icon name="Battery" size={14} aria-label="Battery status" />
         </div>
