@@ -10,7 +10,7 @@ registerApp("Blog", () => import("./apps/blog"), true);
 registerApp("Contact", () => import("./apps/contact"), true);
 
 // Register other apps with lazy loading
-registerApp("Browser", () => import("./apps/browser"));
+registerApp("Browser", () => import("./apps/browser"), false, false);
 registerApp("Terminal", () => import("./apps/terminal"));
 
 const root = document.getElementById("root");
