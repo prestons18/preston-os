@@ -31,6 +31,10 @@ async function prepareBuild() {
 
   if (fs.existsSync("./public")) {
     await fs.promises.cp("./public", "./dist/public", { recursive: true });
+    
+    if (fs.existsSync("./public/robots.txt")) {
+      await fs.promises.copyFile("./public/robots.txt", "./dist/robots.txt");
+    }
   }
 }
 
