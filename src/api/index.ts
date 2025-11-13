@@ -1,17 +1,5 @@
 import { ApiRouter } from "fuse";
 
-import { Buffer } from 'buffer';
-
-declare global {
-  interface Window {
-    Buffer: typeof Buffer;
-  }
-}
-
-if (typeof window !== 'undefined') {
-  window.Buffer = Buffer;
-}
-
 const api = new ApiRouter();
 
 export interface BlogPost {
