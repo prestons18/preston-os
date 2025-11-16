@@ -7,7 +7,7 @@ My OS-style portfolio, built on [Fuse](https://github.com/prestons18/fuse), whic
 ## Features
 
 ### PMOD
-PMOD is a light, declarative framework which uses Fuse to let you define apps and UI components easily.
+PMOD provides primitives which uses Fuse to let you define apps and widgets easily.
 
 Here's an example:
 ```tsx
