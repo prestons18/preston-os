@@ -154,8 +154,8 @@ defineApp({
         <Header>
           <Avatar>
             <img
-              src="/public/me-110.webp"
-              srcSet="/public/me-110.webp 1x, /public/me-220.webp 2x"
+              src="/images/me-110.webp"
+              srcSet="/images/me-110.webp 1x, /images/me-220.webp 2x"
               alt="Preston Arnold"
               style="width: 100%; height: 100%; object-fit: cover;"
               loading="eager"

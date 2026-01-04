@@ -3,8 +3,8 @@ import { resolve } from "path";
 import legacy from "@vitejs/plugin-legacy";
 
 export default defineConfig({
+  publicDir: "static",
   root: ".",
-  publicDir: "public",
   build: {
     outDir: "dist",
     emptyOutDir: true,
