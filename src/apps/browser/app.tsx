@@ -24,40 +24,6 @@ if (!document.getElementById("markdown-styles")) {
   document.head.appendChild(style);
 }
 
-function hydrateBlogPost(postSignal: any, contentSignal: any) {
-  const postElement = document.querySelector("[data-blog-post]");
-  if (!postElement) return null;
-
-  const slug = postElement.getAttribute("data-slug");
-  if (!slug) return null;
-
-  // If we have a pre-rendered post, extract its content
-  const title = postElement.querySelector("h1")?.textContent || "";
-  const date =
-    postElement.querySelector("time")?.getAttribute("datetime") || "";
-  const content = postElement.querySelector(".post-content")?.innerHTML || "";
-
-  // If we have content, use it for the initial render
-  if (content) {
-    const post = {
-      title,
-      date,
-      content,
-      slug,
-      description: "",
-      readingTime: null,
-      tags: [],
-    };
-
-    // Set the initial state
-    postSignal.set(post);
-    contentSignal.set(content);
-    return post;
-  }
-
-  return null;
-}
-
 defineApp({
   name: "Browser",
   icon: "Globe",
@@ -67,29 +33,9 @@ defineApp({
   content(props) {
     const safeProps = props || {};
     const url = signal(safeProps.url || "");
-    const postSignal = signal<BlogPost | null>(null);
-    const contentSignal = signal("");
+    const post = signal<BlogPost | null>(null);
+    const content = signal("");
     const loading = signal(false);
-
-    // Initialize with pre-rendered content if available
-    if (typeof window !== "undefined") {
-      const preRenderedPost = hydrateBlogPost(postSignal, contentSignal);
-      if (preRenderedPost) {
-        // If we have pre-rendered content, we can still fetch fresh data in the background
-        const match = window.location.pathname.match(/^\/blog\/(.+)$/);
-        if (match) {
-          api
-            .handle(`/api/posts/${match[1]}`, {})
-            .then((blogPost: BlogPost) => {
-              if (blogPost) {
-                postSignal.set(blogPost);
-                contentSignal.set(marked(blogPost.content) as string);
-              }
-            })
-            .catch(console.error);
-        }
-      }
-    }
 
     const loadUrl = (newUrl: string) => {
       url.set(newUrl);
@@ -100,15 +46,15 @@ defineApp({
         try {
           const blogPost = api.handle(`/api/posts/${match[1]}`, {}) as BlogPost;
           if (blogPost) {
-            postSignal.set(blogPost);
-            contentSignal.set(marked(blogPost.content) as string);
+            post.set(blogPost);
+            content.set(marked(blogPost.content) as string);
           } else {
-            postSignal.set(null);
-            contentSignal.set("<p>Post not found</p>");
+            post.set(null);
+            content.set("<p>Post not found</p>");
           }
         } catch (e) {
-          postSignal.set(null);
-          contentSignal.set("<p>Failed to load</p>");
+          post.set(null);
+          content.set("<p>Failed to load</p>");
         }
       }
       loading.set(false);
@@ -142,8 +88,7 @@ defineApp({
           {() => {
             if (loading.get()) return <Text>Loading...</Text>;
 
-            const p = postSignal.get();
-            const currentContent = contentSignal.get();
+            const p = post.get();
             return (
               <div>
                 {p && (
@@ -170,7 +115,7 @@ defineApp({
                     )}
                   </PostMeta>
                 )}
-                <div class="markdown-content" innerHTML={currentContent} />
+                <div class="markdown-content" innerHTML={content.get()} />
               </div>
             );
           }}

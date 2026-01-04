@@ -6,8 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && npm run generate-blog-html",
-    "generate-blog-html": "NODE_OPTIONS='--import tsx' node scripts/generate-blog-html.ts",
+    "build": "tsc && vite build",
     "preview": "vite preview",
     "type-check": "tsc --noEmit"
   },
@@ -15,11 +14,9 @@
   "author": "Preston Arnold",
   "license": "ISC",
   "devDependencies": {
-    "@types/marked": "^5.0.2",
     "@types/node": "^20.19.27",
     "@vitejs/plugin-legacy": "^7.2.1",
     "terser": "^5.44.1",
-    "tsx": "^4.21.0",
     "typescript": "^5.0.0",
     "vite": "latest",
     "vite-tsconfig-paths": "^4.3.2"
