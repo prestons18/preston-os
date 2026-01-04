@@ -3,18 +3,23 @@
   "version": "1.0.0",
   "description": "My OS-style personal portfolio.",
   "main": "dist/index.js",
+  "type": "module",
   "scripts": {
-    "dev": "node build.mjs --watch",
-    "build": "tsc && node build.mjs",
-    "build:production": "tsc && node build.mjs --prod",
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
     "type-check": "tsc --noEmit"
   },
   "keywords": [],
   "author": "Preston Arnold",
   "license": "ISC",
   "devDependencies": {
-    "esbuild": "latest",
-    "typescript": "latest"
+    "@types/node": "^20.19.27",
+    "@vitejs/plugin-legacy": "^7.2.1",
+    "terser": "^5.44.1",
+    "typescript": "^5.0.0",
+    "vite": "latest",
+    "vite-tsconfig-paths": "^4.3.2"
   },
   "dependencies": {
     "@prestonarnold/fuse": "^0.1.2",

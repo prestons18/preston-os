@@ -1,6 +1,7 @@
 import { render } from "@prestonarnold/fuse";
 import { Desktop } from "./wm/desktop";
 import { registerApp } from "./utils/appRegistry";
+import "../src/styles/theme.css";
 
 import "./blog/loader";
 
