@@ -120,19 +120,24 @@ export function Desktop() {
     if (!isMobileView.get() && !hasOpenedInitialApp.get()) {
       setTimeout(() => {
         openApp("About");
-
         hasOpenedInitialApp.set(true);
 
-        if (router.currentPath.get().startsWith("/blog")) {
-          const aboutWin = wins.get().find((w) => w.app === "About");
+        const path = router.currentPath.get();
+        const slug = router.currentParams.value?.slug;
 
-          openApp(
-            "Blog",
-            undefined,
-            aboutWin
-              ? { x: aboutWin.x + 80, y: aboutWin.y + 60 }
-              : { x: 700, y: 80 }
-          );
+        const aboutWin = wins.get().find((w) => w.app === "About");
+        const basePos = aboutWin
+          ? { x: aboutWin.x + 80, y: aboutWin.y + 60 }
+          : { x: 700, y: 80 };
+
+        // Blog index only: /blog
+        if (path === "/blog" && !slug) {
+          openApp("Blog", undefined, basePos);
+        }
+
+        // Blog detail: /blog/:slug
+        if (slug) {
+          openApp("Browser", { url: `/blog/${slug}` }, { x: 700, y: 80 });
         }
       }, 100);
     }
