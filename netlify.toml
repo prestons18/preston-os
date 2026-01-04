@@ -28,17 +28,32 @@
     Content-Type = "text/css"
 
 [[headers]]
-  for = "/images/*"
+  for = "/blog/*"
   [headers.values]
-    Cache-Control = "public, max-age=31536000"
+    Content-Type = "text/html; charset=utf-8"
+    Cache-Control = "public, max-age=0, must-revalidate"
 
 [[headers]]
-  for = "/robots.txt"
+  for = "/images/*"
   [headers.values]
-    Content-Type = "text/plain"
-    Cache-Control = "public, max-age=86400"
+    Cache-Control = "public, max-age=31536000, immutable"
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+
+[[redirects]]
+  from = "/blog/:slug"
+  to = "/blog/:slug/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Content-Type = "text/html; charset=utf-8"
+
+[[headers]]
+  for = "/**/*.html"
+  [headers.values]
+    Content-Type = "text/html; charset=utf-8"
