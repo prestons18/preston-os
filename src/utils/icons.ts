@@ -19,11 +19,10 @@ import {
   Instagram,
   User,
   MapPin,
-  Terminal,
   Rss,
   Loader2,
   AlertCircle,
-  Minus
+  Minus,
 } from "lucide";
 
 export const icons = {
@@ -47,11 +46,10 @@ export const icons = {
   Instagram,
   User,
   MapPin,
-  Terminal,
   Rss,
   Loader2,
   AlertCircle,
-  Minus
+  Minus,
 };
 
 export type IconName = keyof typeof icons;

@@ -13,7 +13,6 @@ registerApp("Contact", () => import("./apps/contact/app"), true);
 
 // Register other apps with lazy loading
 registerApp("Browser", () => import("./apps/browser/app"), false, false);
-registerApp("Terminal", () => import("./apps/terminal/app"));
 
 router.registerPattern("/blog");
 router.registerPattern("/blog/:slug");

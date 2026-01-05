@@ -16,7 +16,6 @@ const defaultAppConfigs: Record<string, AppConfig> = {
   Blog: { icon: "BookOpen" },
   Browser: { icon: "Globe" },
   Contact: { icon: "Mail" },
-  Terminal: { icon: "Terminal" },
 };
 
 export const appLoaders: Record<string, ReturnType<typeof lazyLoad>> = {};
