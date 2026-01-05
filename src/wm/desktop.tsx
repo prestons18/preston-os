@@ -7,7 +7,6 @@ import { MobileOS } from "./mobile";
 import "../widgets/prsston";
 import { isMobile } from "../utils/device";
 import { FuseBadge } from "../components/FuseBadge";
-import { appLoaders } from "../utils/appRegistry";
 import { router } from "../router/client";
 
 const Dock = styled("div", {
@@ -57,12 +56,22 @@ export async function openApp(
   name: string,
   props?: any,
   position?: { x?: number; y?: number }
-) {
+): Promise<boolean> {
   try {
-    if (appLoaders[name]) {
-      await import("../utils/appRegistry").then(({ ensureAppLoaded }) => {
-        return ensureAppLoaded(name);
-      });
+    // BLOCK until app is fully loaded and registered
+    const { ensureAppLoaded } = await import("../utils/appRegistry");
+    const loaded = await ensureAppLoaded(name);
+
+    if (!loaded) {
+      console.error(`Failed to load app ${name}`);
+      return false;
+    }
+
+    // Triple-check the app is in the registry with content
+    const app = registry.get(name);
+    if (!app || !app.content) {
+      console.error(`App ${name} not properly registered`);
+      return false;
     }
 
     const n = wins.get().length;
@@ -85,8 +94,11 @@ export async function openApp(
         props,
       },
     ]);
+
+    return true;
   } catch (err) {
     console.error(`Failed to open app ${name}:`, err);
+    return false;
   }
 }
 
@@ -118,8 +130,8 @@ export function Desktop() {
 
   effect(() => {
     if (!isMobileView.get() && !hasOpenedInitialApp.get()) {
-      setTimeout(() => {
-        openApp("About");
+      setTimeout(async () => {
+        await openApp("About");
         hasOpenedInitialApp.set(true);
 
         const path = router.currentPath.get();
@@ -132,12 +144,12 @@ export function Desktop() {
 
         // Blog index only: /blog
         if (path === "/blog" && !slug) {
-          openApp("Blog", undefined, basePos);
+          await openApp("Blog", undefined, basePos);
         }
 
         // Blog detail: /blog/:slug
         if (slug) {
-          openApp("Browser", { url: `/blog/${slug}` }, { x: 700, y: 80 });
+          await openApp("Browser", { url: `/blog/${slug}` }, { x: 700, y: 80 });
         }
       }, 100);
     }
@@ -192,12 +204,22 @@ export function Desktop() {
           children: [
             (w) => {
               const app = registry.get(w.app);
-              if (!app) return document.createTextNode("");
+
+              // If app isn't ready, remove this window
+              if (!app || !app.content) {
+                console.warn(`Removing window for unloaded app: ${w.app}`);
+                setTimeout(() => {
+                  wins.set(wins.get().filter((x) => x.id !== w.id));
+                }, 0);
+                return document.createTextNode("");
+              }
 
               const zIndexSignal = zIndexMap.get(w.id);
               const minimisedSignal = minimisedMap.get(w.id);
-              if (!zIndexSignal || !minimisedSignal)
+
+              if (!zIndexSignal || !minimisedSignal) {
                 return document.createTextNode("");
+              }
 
               return (
                 <AppWindow
