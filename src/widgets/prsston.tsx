@@ -1,5 +1,16 @@
 import { h, signal } from "@prestonarnold/fuse";
-import { defineWidget, Widget, WidgetHeader, WidgetTitle, WidgetContent, WidgetItem, WidgetItemTitle, WidgetItemMeta, WidgetAction, Icon, WidgetBadge } from "../pmod";
+import {
+  defineWidget,
+  Widget,
+  WidgetHeader,
+  WidgetTitle,
+  WidgetContent,
+  WidgetItem,
+  WidgetItemTitle,
+  WidgetItemMeta,
+  Icon,
+  WidgetBadge,
+} from "../pmod";
 import { BlogPost } from "../controllers/blog";
 import { openApp } from "../wm/desktop";
 import { api } from "../router/api";
@@ -18,10 +29,10 @@ defineWidget({
     const fetchPosts = () => {
       loading.set(true);
       try {
-        const result = api.handle('/api/posts', {});
+        const result = api.handle("/api/posts", {});
         posts.set(result || []);
       } catch (error) {
-        console.error('Failed to fetch posts:', error);
+        console.error("Failed to fetch posts:", error);
         posts.set([]);
       }
       loading.set(false);
@@ -30,7 +41,6 @@ defineWidget({
     // Initial fetch
     fetchPosts();
 
-
     const formatDate = (dateString: string) => {
       try {
         const date = new Date(dateString);
@@ -38,31 +48,34 @@ defineWidget({
         const diffMs = now.getTime() - date.getTime();
         const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-        if (diffDays === 0) return 'Today';
-        if (diffDays === 1) return 'Yesterday';
+        if (diffDays === 0) return "Today";
+        if (diffDays === 1) return "Yesterday";
         if (diffDays < 7) return `${diffDays} days ago`;
         if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        return date.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        });
       } catch {
         return dateString;
       }
     };
 
     const openPost = (slug: string) => {
-      openApp('Browser', { url: `/blog/${slug}` });
+      openApp("Browser", { url: `/blog/${slug}` });
     };
 
     return (
-      <Widget style={`left: ${x}px; top: ${y}px; width: 320px; max-height: 400px;`}>
+      <Widget
+        style={`left: ${x}px; top: ${y}px; width: 320px; max-height: 400px;`}
+      >
         <WidgetHeader>
           <WidgetTitle>
             <Icon name="Rss" size={16} />
             <span>prsston</span>
             <WidgetBadge>{() => posts.get().length}</WidgetBadge>
           </WidgetTitle>
-          <WidgetAction title="Refresh">
-            <Icon name="RefreshCw" size={14} />
-          </WidgetAction>
         </WidgetHeader>
 
         <WidgetContent>
@@ -81,9 +94,7 @@ defineWidget({
                 <div style="display: flex; flex-direction: column; align-items: center; gap: var(--space-sm); padding: var(--space-lg); color: var(--text-muted); text-align: center;">
                   <Icon name="AlertCircle" size={20} />
                   <span style="font-size: 13px;">{error.get()}</span>
-                  <button
-                    style="background: var(--bg-soft); border: none; padding: 6px 12px; border-radius: var(--radius-base); cursor: pointer; color: var(--text-primary); font-size: 12px;"
-                  >
+                  <button style="background: var(--bg-soft); border: none; padding: 6px 12px; border-radius: var(--radius-base); cursor: pointer; color: var(--text-primary); font-size: 12px;">
                     Try Again
                   </button>
                 </div>
@@ -99,14 +110,16 @@ defineWidget({
               );
             }
 
-            return postList.map(post => (
+            return postList.map((post) => (
               <WidgetItem
                 onClick={() => openPost(post.slug)}
                 onMouseEnter={(e: MouseEvent) => {
-                  (e.currentTarget as HTMLElement).style.background = 'var(--bg-soft)';
+                  (e.currentTarget as HTMLElement).style.background =
+                    "var(--bg-soft)";
                 }}
                 onMouseLeave={(e: MouseEvent) => {
-                  (e.currentTarget as HTMLElement).style.background = 'transparent';
+                  (e.currentTarget as HTMLElement).style.background =
+                    "transparent";
                 }}
               >
                 <WidgetItemTitle>{post.title}</WidgetItemTitle>
@@ -117,5 +130,5 @@ defineWidget({
         </WidgetContent>
       </Widget>
     );
-  }
+  },
 });

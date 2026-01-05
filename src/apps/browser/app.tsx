@@ -1,5 +1,5 @@
 import { h, signal } from "@prestonarnold/fuse";
-import { defineApp, VStack, Button, Icon, Text } from "../../pmod";
+import { defineApp, VStack, Text } from "../../pmod";
 import { marked } from "marked";
 import { BlogPost } from "../../controllers/blog";
 import { formatLongDate } from "../../utils/date";
@@ -67,20 +67,6 @@ defineApp({
     return (
       <VStack gap={0} style="height: 100%">
         <BrowserHeader>
-          <Button
-            variant="ghost"
-            onClick={() => {}}
-            style="padding: var(--space-xs)"
-          >
-            <Icon name="ChevronLeft" size={18} />
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={() => loadUrl(url.get())}
-            style="padding: var(--space-xs)"
-          >
-            <Icon name="RefreshCw" size={16} />
-          </Button>
           <AddressBar>{() => url.get() || "about:blank"}</AddressBar>
         </BrowserHeader>
 

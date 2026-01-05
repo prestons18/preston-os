@@ -61,13 +61,6 @@ defineApp({
           style="align-items: center; justify-content: space-between"
         >
           <Heading>Blog Posts</Heading>
-          <Button
-            variant="ghost"
-            onClick={fetchPosts}
-            style="padding: var(--space-xs)"
-          >
-            <Icon name="RefreshCw" size={16} />
-          </Button>
         </HStack>
 
         {() => {
