@@ -47,7 +47,7 @@ type WindowState = {
 };
 
 const wins = signal<WindowState[]>([]);
-const hasOpenedInitialApp = signal(false);
+const initialLoadComplete = signal(false);
 let highestZIndex = 100;
 const zIndexMap = new Map<string, ReturnType<typeof signal<number>>>();
 const minimisedMap = new Map<string, ReturnType<typeof signal<boolean>>>();
@@ -58,19 +58,15 @@ export async function openApp(
   position?: { x?: number; y?: number }
 ): Promise<boolean> {
   try {
-    // BLOCK until app is fully loaded and registered
     const { ensureAppLoaded } = await import("../utils/appRegistry");
     const loaded = await ensureAppLoaded(name);
 
     if (!loaded) {
-      console.error(`Failed to load app ${name}`);
       return false;
     }
 
-    // Triple-check the app is in the registry with content
     const app = registry.get(name);
     if (!app || !app.content) {
-      console.error(`App ${name} not properly registered`);
       return false;
     }
 
@@ -123,35 +119,55 @@ function toggleMinimise(id: string) {
   }
 }
 
+async function openInitialApps() {
+  if (initialLoadComplete.get()) return;
+
+  try {
+    // About is the main view, always open first.
+    const aboutSuccess = await openApp("About");
+    if (!aboutSuccess) {
+      // Retry once after a short delay
+      await new Promise((resolve) => setTimeout(resolve, 200));
+      await openApp("About");
+    }
+
+    // Get routing info
+    const path = router.currentPath.get();
+    const slug = router.currentParams.value?.slug;
+
+    // Calculate position for second app
+    const aboutWin = wins.get().find((w) => w.app === "About");
+    const basePos = aboutWin
+      ? { x: aboutWin.x + 80, y: aboutWin.y + 60 }
+      : { x: 700, y: 80 };
+
+    // Open route-specific app
+    if (path === "/blog" && !slug) {
+      await openApp("Blog", undefined, basePos);
+    } else if (slug) {
+      await openApp("Browser", { url: `/blog/${slug}` }, basePos);
+    }
+
+    initialLoadComplete.set(true);
+  } catch (err) {
+    console.error("Failed to open initial apps:", err);
+    // Mark as complete anyway to prevent infinite retries
+    initialLoadComplete.set(true);
+  }
+}
+
 export function Desktop() {
   const apps = registry.list();
   const widgets = widgetRegistry.list();
   const isMobileView = signal(isMobile.get());
 
+  // Use effect to open initial apps on desktop
   effect(() => {
-    if (!isMobileView.get() && !hasOpenedInitialApp.get()) {
-      setTimeout(async () => {
-        await openApp("About");
-        hasOpenedInitialApp.set(true);
-
-        const path = router.currentPath.get();
-        const slug = router.currentParams.value?.slug;
-
-        const aboutWin = wins.get().find((w) => w.app === "About");
-        const basePos = aboutWin
-          ? { x: aboutWin.x + 80, y: aboutWin.y + 60 }
-          : { x: 700, y: 80 };
-
-        // Blog index only: /blog
-        if (path === "/blog" && !slug) {
-          await openApp("Blog", undefined, basePos);
-        }
-
-        // Blog detail: /blog/:slug
-        if (slug) {
-          await openApp("Browser", { url: `/blog/${slug}` }, { x: 700, y: 80 });
-        }
-      }, 100);
+    if (!isMobileView.get() && !initialLoadComplete.get()) {
+      // Use a microtask to ensure registry is fully initialized
+      Promise.resolve().then(() => {
+        openInitialApps();
+      });
     }
   });
 
@@ -205,7 +221,6 @@ export function Desktop() {
             (w) => {
               const app = registry.get(w.app);
 
-              // If app isn't ready, remove this window
               if (!app || !app.content) {
                 console.warn(`Removing window for unloaded app: ${w.app}`);
                 setTimeout(() => {
